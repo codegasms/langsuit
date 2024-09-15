@@ -22,8 +22,8 @@ export class UserOrchestrator {
     private m_RegisteredUser:Map<String,any> = new Map();
     static #instance: UserOrchestrator;
     
-    public registerUser(productID:String, user:User){
-        this.m_RegisteredUser.set(productID, user);
+    public registerUser(userID:String, user:User){
+        this.m_RegisteredUser.set(userID, user);
     }
     
     public static get instance(): UserOrchestrator {
