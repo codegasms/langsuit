@@ -1,7 +1,5 @@
 import db from "@/db/drizzle";
 import { user,admin,instructor,naive } from "@/db/schema";
-
-
 class dbOrchestrator {
     static #instance: dbOrchestrator;
 
@@ -16,32 +14,96 @@ class dbOrchestrator {
 }
 
 
-export class User{
-    static #instance: User;
-    
-    private constructor() {}
 
-    public static get instance(): User {
-        if(!User.#instance) {
-            User.#instance = new User;
+abstract class User {
+    public abstract insert(role:string,username:string,email:string,password:string) : Promise<void>;
+}
+export class UserOrchestrator {
+    private m_RegisteredUser:Map<String,any> = new Map();
+    static #instance: UserOrchestrator;
+    
+    public registerUser(productID:String, user:User){
+        this.m_RegisteredUser.set(productID, user);
+    }
+    
+    public static get instance(): UserOrchestrator {
+        if(!UserOrchestrator.#instance){
+            UserOrchestrator.#instance = new UserOrchestrator();
         }
-        return User.#instance;
+        return UserOrchestrator.#instance;
+    }
+
+    public static get(userRole:String) : User {
+        return (UserOrchestrator.instance || (this)).m_RegisteredUser.get(userRole);
+    }
+}
+class adminUser extends User {
+    static #instance: adminUser;
+    
+    private constructor() {
+        super();
+    }
+    
+    public static get instance(): adminUser {
+        if(!adminUser.#instance) {
+            adminUser.#instance = new adminUser;
+        }
+        return adminUser.#instance;
+    }
+
+    static {
+        UserOrchestrator.instance.registerUser("admin",adminUser.instance);
     }
 
     public async insert(role:string,username:string,email:string,password:string) {
-        switch (role) {
-            case "admin":
-                await db.insert(user).values({username,email,password,role});
-                await db.insert(admin).values({username,email,password});
-                break;
-            case "instructor":
-                await db.insert(user).values({username,email,password,role});
-                await db.insert(instructor).values({username,email,password});
-                break;
-            default:
-                await db.insert(user).values({username,email,password,role});
-                await db.insert(naive).values({username,email,password});
-                break;
+        await db.insert(user).values({username,email,password,role});
+        await db.insert(admin).values({username,email,password});
+    }
+}
+
+class instructorUser extends User {
+    static #instance: instructorUser;
+    
+    private constructor() {
+        super();
+    }
+
+    public static get instance(): instructorUser {
+        if(!instructorUser.#instance) {
+            instructorUser.#instance = new instructorUser;
         }
+        return instructorUser.#instance;
+    }
+
+    static {
+        UserOrchestrator.instance.registerUser("instructor",instructorUser.instance);
+    }
+
+    public async insert(role:string,username:string,email:string,password:string) {
+        await db.insert(user).values({username,email,password,role});
+        await db.insert(instructor).values({username,email,password});
+    }
+}
+class naiveUser extends User {
+    static #instance: naiveUser;
+    
+    private constructor() {
+        super();
+    }
+
+    public static get instance(): naiveUser {
+        if(!naiveUser.#instance) {
+            naiveUser.#instance = new naiveUser;
+        }
+        return naiveUser.#instance;
+    }
+
+    static {
+        UserOrchestrator.instance.registerUser("naive",naiveUser.instance);
+    }
+
+    public async insert(role:string,username:string,email:string,password:string) {
+        await db.insert(user).values({username,email,password,role});
+        await db.insert(naive).values({username,email,password});
     }
 }
