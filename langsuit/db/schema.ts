@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm";
-import { pgTable,serial, text, varchar,timestamp, integer } from "drizzle-orm/pg-core"
+import { pgTable,serial, text, varchar,timestamp, integer, date } from "drizzle-orm/pg-core"
+
 
 
 // reusable chunks 
@@ -54,3 +55,39 @@ export const naive = pgTable("naive",{
     ...userColumns,
     // not thought yet
 })
+
+export const liveStream = pgTable("live_stream",{
+    ...id,
+    ...timestamp,
+    instructorId: integer("instructor_id").notNull().references(()=>instructor.id),
+    title: text("title").notNull(),
+    date: date("date").notNull(),
+    price: integer("price")
+    // Referencing instructor
+});
+
+export const liveStreamRelation = relations(liveStream,({one}) => ({
+    instructor: one(instructor,{
+        fields:[liveStream.instructorId],
+        references: [instructor.id]
+    })
+}))
+
+export const ticket = pgTable("ticket",{
+    ...id,
+    ...timestamp,
+    streamId: integer("stream_id").notNull().references(()=>liveStream.id),
+    userId: integer("user_id").notNull().references(()=>user.id)
+    // Referencing liveStream and User
+})
+
+export const ticketRelation = relations(ticket,({one}) => ({
+    liveStream: one(liveStream,{
+        fields: [ticket.streamId],
+        references: [liveStream.id]
+    }),
+    user: one(user,{
+        fields: [ticket.userId],
+        references: [user.id]
+    })    
+}))
