@@ -56,8 +56,9 @@ class adminUser extends User {
     }
 
     public async insert(role:string,username:string,email:string,password:string) {
-        await db.insert(user).values({username,email,password,role});
-        await db.insert(admin).values({username,email,password});
+        const userTable = await db.insert(user).values({username,email,password,role}).returning({insertedId: user.id});
+        const newUser = userTable[0];
+        await db.insert(admin).values({id:newUser.insertedId,username,email,password});
     }
 }
 
@@ -80,8 +81,9 @@ class instructorUser extends User {
     }
 
     public async insert(role:string,username:string,email:string,password:string) {
-        await db.insert(user).values({username,email,password,role});
-        await db.insert(instructor).values({username,email,password});
+        const userTable = await db.insert(user).values({username,email,password,role}).returning({insertedId: user.id});
+        const newUser = userTable[0];
+        await db.insert(instructor).values({id:newUser.insertedId,username,email,password});
     }
 }
 class naiveUser extends User {
@@ -103,7 +105,8 @@ class naiveUser extends User {
     }
 
     public async insert(role:string,username:string,email:string,password:string) {
-        await db.insert(user).values({username,email,password,role});
-        await db.insert(naive).values({username,email,password});
+        const userTable = await db.insert(user).values({username,email,password,role}).returning({insertedId: user.id});
+        const newUser = userTable[0];
+        await db.insert(naive).values({id:newUser.insertedId,username,email,password});
     }
 }
