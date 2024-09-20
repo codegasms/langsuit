@@ -12,15 +12,17 @@ const timestamps = {
 const id = {
     id: serial("id").primaryKey()
 }
-const explicitId = {
-    id: integer("id").primaryKey()
+const refId = {
+    id: integer("user_id").notNull().references(() => user.id).primaryKey()
 }
+
 export const courses = pgTable("courses",{
     ...id,
     title: text("title").notNull(),
     imageSrc: text("image_src").notNull(),
     instructorId: integer("instructor_id").notNull().references(()=>instructor.id)
 });
+
 export const coursesRelation = relations(courses,({one,many}) => ({
     instructor: one(instructor,{
         fields: [courses.instructorId],
@@ -34,7 +36,12 @@ const userColumns = {
     email: varchar("email", {length: 256}).notNull(),
     password: text("password").notNull(),
 }
-
+const userTypesColumns = {
+    ...refId,
+    username: varchar("username").notNull(),
+    email: varchar("email", {length: 256}).notNull(),
+    password: text("password").notNull(),
+}
 export const user = pgTable("user",{
     ...userColumns,
     role: text("role").notNull()
@@ -42,12 +49,12 @@ export const user = pgTable("user",{
 
 
 export const admin = pgTable("admin",{
-    ...userColumns,
+    ...userTypesColumns,
     // not thought yet
 }) 
 
 export const instructor = pgTable("instructor",{
-    ...userColumns,
+    ...userTypesColumns,
     // not thought yet
 })
 
@@ -56,7 +63,7 @@ export const instructorRelation = relations(instructor,({one,many}) => ({
 }))
 
 export const naive = pgTable("naive",{
-    ...userColumns
+    ...userTypesColumns
     // not thought yet
 })
 
