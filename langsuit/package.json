@@ -8,12 +8,15 @@
     "start": "next start",
     "lint": "next lint",
     "db:studio": "npx drizzle-kit studio",
-    "db:push": "npx drizzle-kit push" 
+    "db:push": "npx drizzle-kit push"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.9.5",
     "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-tooltip": "^1.1.2",
+    "axios": "^1.7.7",
     "class-variance-authority": "^0.7.0",
+    "clerk": "^0.8.3",
     "clsx": "^2.1.1",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.33.0",
@@ -21,8 +24,10 @@
     "next": "14.2.7",
     "react": "^18",
     "react-dom": "^18",
+    "svix": "^1.35.0",
     "tailwind-merge": "^2.5.2",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zustand": "^5.0.0-rc.2"
   },
   "devDependencies": {
     "@types/node": "^20",
