@@ -1,0 +1,84 @@
+"use client";
+
+import { useEffect, useState } from 'react';
+import { usePathname, useParams } from 'next/navigation';
+import {
+    Fullscreen,
+    KeyRound,
+    MessageSquare,
+    Users
+} from "lucide-react";
+import axios from 'axios';
+import { NavItem } from '../sidebar/nav-item';
+import { cn } from '@/lib/utils';
+import { useInstructorSidebar } from '@/store/use-instructorsidebar';
+
+export const Navigation = () => {
+    const pathname = usePathname();
+    const { username: paramUsername } = useParams(); 
+    const [self, setSelf] = useState(null); 
+    const [loading, setLoading] = useState(true); 
+    const { collapsed } = useInstructorSidebar((state) => state);
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const response = await axios.post('http://localhost:3000/api/user', {
+                    username: paramUsername,
+                    role: "instructor"
+                });
+                // console.log(response);
+                const {user} = response.data;
+                setSelf(user);
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching user:', error);
+                setLoading(false); 
+            }
+        };
+
+        fetchUser();
+    }, [paramUsername]);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    const routes = [
+        {
+            label: "Steam",
+            href: `/instructor/${self?.username}`,
+            icon: Fullscreen,
+        },
+        {
+            label: "Keys",
+            href: `/instructor/${self?.username}/keys`,
+            icon: KeyRound,
+        },
+        {
+            label: "Chat",
+            href: `/instructor/${self?.username}/chat`,
+            icon: MessageSquare,
+        },
+        {
+            label: "Community",
+            href: `/instructor/${self?.username}/cppmunity`,
+            icon: Users,
+        }
+    ];
+    
+    // console.log(routes);
+    return (
+            <ul className={cn("fixed mt-20 left-0 flex flex-col w-60 h-full bg-[#1a1c23] text-white border-r border-[#2D2E35] z-20",
+            collapsed && "w-[70px]")}>
+                {routes.map((route, index) => (
+                    <NavItem
+                        key={route.href}    
+                        label={route.label}
+                        icon={route.icon}
+                        href={route.href}
+                        isActive={pathname == route.href}
+                    />
+                ))}
+            </ul>
+    );
+};
