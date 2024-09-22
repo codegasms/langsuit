@@ -1,5 +1,6 @@
 import db from "@/db/drizzle";
 import { user,admin,instructor,naive } from "@/db/schema";
+import { eq } from "drizzle-orm";
 class dbOrchestrator {
     static #instance: dbOrchestrator;
 
@@ -15,8 +16,26 @@ class dbOrchestrator {
 
 
 
-abstract class User {
+export abstract class User {
     public abstract insert(role:string,username:string,email:string,password:string) : Promise<void>;
+    public async getSelfByUsername(username: string): Promise<any> {
+        console.log("first");
+        try {
+            const foundUser = await db
+                .select()                // Start the select query
+                .from(user)              // Specify the table
+                .where(eq(user.username, username))  // Use the 'eq' helper for WHERE clause
+                .limit(1);               // Limit to 1 result (optional)
+             
+            console.log("foundUser", foundUser);
+            // Check if the user is found and return the first result
+            return foundUser.length > 0 ? foundUser[0] : null;
+
+        } catch (error) {
+            console.error("Error fetching user by username:", error);
+            throw new Error("Error fetching user by username");
+        }
+    }
 }
 export class UserOrchestrator {
     private m_RegisteredUser:Map<String,any> = new Map();
@@ -62,7 +81,7 @@ class adminUser extends User {
     }
 }
 
-class instructorUser extends User {
+export class instructorUser extends User {
     static #instance: instructorUser;
     
     private constructor() {
