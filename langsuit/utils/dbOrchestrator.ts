@@ -56,6 +56,7 @@ export class UserOrchestrator {
         return (UserOrchestrator.instance || (this)).m_RegisteredUser.get(userRole);
     }
 }
+
 class adminUser extends User {
     static #instance: adminUser;
     
