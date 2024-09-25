@@ -20,12 +20,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-
-const MainLayout =({
-  children,
-}:Props) => {
-  return(
-    
-  )
-}
