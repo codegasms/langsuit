@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { pgTable,serial, text, varchar,timestamp, integer, date, primaryKey } from "drizzle-orm/pg-core"
+import { boolean,pgTable,serial, text, varchar,timestamp, integer, date, primaryKey } from "drizzle-orm/pg-core"
 
 
 
@@ -85,14 +85,27 @@ export const followListRelations = relations(followList,({one,many}) => ({
         references: [instructor.id]
     })
 }))
+
 export const liveStream = pgTable("live_stream",{
     ...id,
     ...timestamp,
+    // Referencing instructor
     instructorId: integer("instructor_id").notNull().references(()=>instructor.id),
     title: text("title").notNull(),
     date: date("date").notNull(),
-    price: integer("price")
-    // Referencing instructor
+    price: integer("price"),
+
+    ingressId: text('ingress_id').notNull(),
+    serverUrl: text('server_url'),
+    streamKey: text('stream_key'),
+    
+    isLive: boolean('is_live'),
+    isChatEnabled: boolean('is_chat_enabled'),
+    isChatDelayed: boolean('is_chat_delayed'),
+    isChatFollowersOnly: boolean('is_chat_followers_only')
+
+    // --->
+     
 });
 
 export const liveStreamRelation = relations(liveStream,({one}) => ({

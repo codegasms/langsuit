@@ -61,7 +61,7 @@ export const Navigation = () => {
         },
         {
             label: "Community",
-            href: `/instructor/${self?.username}/cppmunity`,
+            href: `/instructor/${self?.username}/community`,
             icon: Users,
         }
     ];
