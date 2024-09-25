@@ -27,3 +27,12 @@ export default function RootLayout({
     </ClerkProvider>
   );
 }
+
+
+const MainLayout =({
+  children,
+}:Props) => {
+  return(
+    
+  )
+}
