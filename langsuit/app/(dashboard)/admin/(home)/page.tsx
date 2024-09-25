@@ -6,6 +6,9 @@ import { motion } from "framer-motion";
 
 import StatCard from "../_components/StatCard";
 import Header from "../_components/Header";
+import SalesOverviewChart from "./_components/SalesOverviewChart";
+import CategoryDistributionChart from "./_components/CategoryDistributionChart";
+import SalesChannelChart from "./_components/SalesChannelChart";
 
 const OverviewPage = () => {
 	return (
@@ -26,11 +29,11 @@ const OverviewPage = () => {
 					<StatCard name='Conversion Rate' icon={BarChart2} value='12.5%' color='#10B981' />
 				</motion.div>
 
-				{/* <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
+				 <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
 					<SalesOverviewChart />
 					<CategoryDistributionChart />
 					<SalesChannelChart />
-				</div> */}
+				</div> 
 			</main>
 		</div>
 	);
