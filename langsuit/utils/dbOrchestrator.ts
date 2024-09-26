@@ -27,7 +27,7 @@ export abstract class User {
                 .where(eq(user.username, username))  // Use the 'eq' helper for WHERE clause
                 .limit(1);               // Limit to 1 result (optional)
              
-            console.log("foundUser", foundUser);
+            // console.log("foundUser", foundUser);
             // Check if the user is found and return the first result
             return foundUser.length > 0 ? foundUser[0] : null;
 
