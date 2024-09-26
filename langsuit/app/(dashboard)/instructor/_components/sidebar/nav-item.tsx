@@ -1,4 +1,4 @@
-"use-client";
+"use client";
 
 import { LucideIcon } from "lucide-react";
 import { useInstructorSidebar } from '@/store/use-instructorsidebar';
@@ -6,19 +6,19 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-interface navItemProps {
+interface NavItemProps {
     icon: LucideIcon;
     label: string;
     href: string;
     isActive: boolean;
-};
+}
 
 export const NavItem = ({
-    icon:Icon,
+    icon: Icon,
     label,
     href,
     isActive
-}: navItemProps) => {
+}: NavItemProps) => {
     const { collapsed } = useInstructorSidebar((state) => state);
     return (
         <Button
@@ -32,16 +32,15 @@ export const NavItem = ({
         >
             <Link href={href}>
                 <div className="flex items-center gap-x-4">
-                    <Icon className={cn(
-                        "h-4 w-4",
-                        collapsed ? "mr-0" : "mr-2"
-                    )}>        
-                        {!collapsed && (
-                            <span>
-                                {label}
-                            </span>
-                        )}
-                    </Icon>
+                    <Icon className="h-4 w-4" />
+                    {!collapsed && (
+                        <span className={cn(
+                            "z-100",
+                            isActive ? "text-black" : "text-white"
+                        )}>
+                            {label}
+                        </span>
+                    )}
                 </div>
             </Link>
         </Button>
