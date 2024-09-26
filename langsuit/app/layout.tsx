@@ -1,3 +1,6 @@
+import {
+  ClerkProvider
+} from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
 import "./globals.css";
@@ -11,21 +14,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: Readonly < {
   children: React.ReactNode;
-}>) {
+} > ){
   return (
-    <html lang="en">
-      <body className={font.className}>{children}</body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={font.className}>
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
   );
-}
-
-
-const MainLayout =({
-  children,
-}:Props) => {
-  return(
-    
-  )
 }
