@@ -21,11 +21,11 @@ export const Header = () => {
           </h1>
         </div>
         <ClerkLoading>
-          <Loader className="h-5 w-5 to-muted-foreground automate-spin" />
+          <Loader className="h-5 w-5 to-muted-foreground animate-spin" />
         </ClerkLoading>
         <ClerkLoaded>
           <SignedIn>
-            <UserButton afterSignOutUrl="/"/>
+            <UserButton afterSignOutUrl="/" userProfileMode="navigation"/>
           </SignedIn>
           <SignedOut>
             <SignInButton
