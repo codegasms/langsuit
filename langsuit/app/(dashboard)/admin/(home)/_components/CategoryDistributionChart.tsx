@@ -1,19 +1,31 @@
 "use client"
 
 import { motion } from "framer-motion";
+import { useState,useEffect } from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts";
-
-const categoryData = [
-	{ name: "Electronics", value: 4500 },
-	{ name: "Clothing", value: 3200 },
-	{ name: "Home & Garden", value: 2800 },
-	{ name: "Books", value: 2100 },
-	{ name: "Sports & Outdoors", value: 1900 },
-];
 
 const COLORS = ["#6366F1", "#8B5CF6", "#EC4899", "#10B981", "#F59E0B"];
 
 const CategoryDistributionChart = () => {
+	const [categoryData, setCategoryData] = useState([]);
+	const [isLoading,setIsLoading] = useState(true);
+
+	useEffect(() => {
+		const fetchCategoryData = async () => {
+			try {
+				const response = await fetch("/api/dashboard/admin/overview/pie");
+				const data = await response.json();
+				setCategoryData(data);
+				setIsLoading(false);
+			} catch (error) {
+				console.error("Error fetching category data:", error);
+			}
+		};
+		fetchCategoryData();
+	}, []);
+
+	if(isLoading) return <div>Loading...</div>
+	
 	return (
 		<motion.div
 			className='bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border border-gray-700'

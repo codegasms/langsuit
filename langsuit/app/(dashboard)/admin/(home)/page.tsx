@@ -9,8 +9,38 @@ import Header from "../_components/Header";
 import SalesOverviewChart from "./_components/SalesOverviewChart";
 import CategoryDistributionChart from "./_components/CategoryDistributionChart";
 import SalesChannelChart from "./_components/SalesChannelChart";
+import { useEffect, useState } from "react";
+
+interface StatCardData {
+    totalSales: number;
+    newUsers: number;
+    totalCourses: number;
+    conversionRate: number;
+}
 
 const OverviewPage = () => {
+	const [statCardData, setStatCardData] = useState<StatCardData | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    useEffect(() => {
+        const fetchStatCardData = async () => {
+            try {
+                const response = await fetch('/api/dashboard/admin/overview/statcard');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch stat card data');
+                }
+                const data = await response.json();
+                setIsLoading(false);
+				console.log(data);
+                setStatCardData(data);
+            } catch (error) {
+                console.error('Error fetching stat card data:', error);
+            }
+        };
+
+        fetchStatCardData();
+    }, []);
+	
+    if(isLoading) return <div>Loading ..</div>
 	return (
 		<div className='flex-1 overflow-auto relative z-10'>
 			<Header title='Overview' />
@@ -23,10 +53,30 @@ const OverviewPage = () => {
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 1 }}
 				>
-					<StatCard name='Total Sales' icon={Zap} value='$12,345' color='#6366F1' />
-					<StatCard name='New Users' icon={Users} value='1,234' color='#8B5CF6' />
-					<StatCard name='Total Products' icon={ShoppingBag} value='567' color='#EC4899' />
-					<StatCard name='Conversion Rate' icon={BarChart2} value='12.5%' color='#10B981' />
+					<StatCard 
+                        name='Total Sales' 
+                        icon={Zap} 
+                        value={statCardData ? `$${statCardData.totalSales.toLocaleString()}` : 'Loading...'} 
+                        color='#6366F1' 
+                    />
+                    <StatCard 
+                        name='New Users' 
+                        icon={Users} 
+                        value={statCardData ? statCardData.newUsers.toLocaleString() : 'Loading...'} 
+                        color='#8B5CF6' 
+                    />
+                    <StatCard 
+                        name='Total Courses' 
+                        icon={ShoppingBag} 
+                        value={statCardData ? statCardData.totalCourses.toLocaleString() : 'Loading...'} 
+                        color='#EC4899' 
+                    />
+                    <StatCard 
+                        name='Conversion Rate' 
+                        icon={BarChart2} 
+                        value={statCardData ? `${statCardData.conversionRate}%` : 'Loading...'} 
+                        color='#10B981' 
+                    />
 				</motion.div>
 
 				 <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
@@ -38,4 +88,6 @@ const OverviewPage = () => {
 		</div>
 	);
 };
+
+
 export default OverviewPage;
