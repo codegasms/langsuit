@@ -1,16 +1,36 @@
 import { motion } from "framer-motion";
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
-const salesByCategory = [
-	{ name: "Electronics", value: 400 },
-	{ name: "Clothing", value: 300 },
-	{ name: "Home & Garden", value: 200 },
-	{ name: "Books", value: 100 },
-	{ name: "Others", value: 150 },
-];
+import { useEffect,useState } from 'react';
+
 
 const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff8042", "#0088FE"];
 
 const SalesByCategoryChart = () => {
+	const [salesByCategory, setSalesByCategory] = useState<StatCardData | null>(null);
+
+	const [isLoading,setIsLoading] = useState(true);
+
+	useEffect(() => {
+        const fetchStatCardData = async () => {
+            try {
+                const response = await fetch('/api/dashboard/admin/sales/pie');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch stat card data');
+                }
+                const data = await response.json();
+                setIsLoading(false);
+				console.log(data);
+                setSalesByCategory(data);
+            } catch (error) {
+                console.error('Error fetching stat card data:', error);
+            }
+        };
+
+        fetchStatCardData();
+    }, []);
+
+	if(isLoading) return <div>Loading ..</div>
+
 	return (
 		<motion.div
 			className='bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border border-gray-700'

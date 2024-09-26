@@ -2,7 +2,7 @@
 
 import { UserCheck, UserPlus, UsersIcon, UserX } from "lucide-react";
 import { motion } from "framer-motion";
-
+import {useState,useEffect} from 'react'
 
 import Header from "../_components/Header";
 import StatCard from "../_components/StatCard";
@@ -11,14 +11,40 @@ import UserGrowthChart from "./_components/UserGrowthChart";
 import UserActivityHeatmap from "./_components/UserActivityHeatmap";
 import UserDemographicsChart from "./_components/UserDemographicsChart";
 
-const userStats = {
-	totalUsers: 152845,
-	newUsersToday: 243,
-	activeUsers: 98520,
-	churnRate: "2.4%",
+interface StatCardData {
+    totalUsers: number;
+    todayNewUsers: number;
+    ActiveUsers: number;
+    curnRate: number;
 };
 
+
 const UsersPage = () => {
+	const [statCardData, setStatCardData] = useState<StatCardData | null>(null);
+
+	const [isLoading,setIsLoading] = useState(true);
+
+	useEffect(() => {
+        const fetchStatCardData = async () => {
+            try {
+                const response = await fetch('/api/dashboard/admin/users/statcard');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch stat card data');
+                }
+                const data = await response.json();
+                setIsLoading(false);
+				console.log(data);
+                setStatCardData(data);
+            } catch (error) {
+                console.error('Error fetching stat card data:', error);
+            }
+        };
+
+        fetchStatCardData();
+    }, []);
+
+	if(isLoading) return <div>Loding..</div>
+
 	return (
 		<div className='flex-1 overflow-auto relative z-10'>
 			<Header title='Users' />
@@ -34,17 +60,17 @@ const UsersPage = () => {
 					<StatCard
 						name='Total Users'
 						icon={UsersIcon}
-						value={userStats.totalUsers.toLocaleString()}
+						value={statCardData.totalUsers.toLocaleString()}
 						color='#6366F1'
 					/>
-					<StatCard name='New Users Today' icon={UserPlus} value={userStats.newUsersToday} color='#10B981' />
+					<StatCard name='New Users Today' icon={UserPlus} value={statCardData.todayNewUsers} color='#10B981' />
 					<StatCard
 						name='Active Users'
 						icon={UserCheck}
-						value={userStats.activeUsers.toLocaleString()}
+						value={statCardData.ActiveUsers.toLocaleString()}
 						color='#F59E0B'
 					/>
-					<StatCard name='Churn Rate' icon={UserX} value={userStats.churnRate} color='#EF4444' />
+					<StatCard name='Churn Rate' icon={UserX} value={statCardData.curnRate} color='#EF4444' />
 				</motion.div>
 
 				<UsersTable />

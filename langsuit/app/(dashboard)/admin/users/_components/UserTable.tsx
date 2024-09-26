@@ -1,6 +1,7 @@
-import { useState } from "react";
+
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
+import { useEffect,useState } from 'react';
 
 const userData = [
 	{ id: 1, name: "John Doe", email: "john@example.com", role: "Customer", status: "Active" },
@@ -13,15 +14,38 @@ const userData = [
 const UsersTable = () => {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [filteredUsers, setFilteredUsers] = useState(userData);
-
+	const [ UsersTable,setUsersTable ] = useState([]);
 	const handleSearch = (e) => {
 		const term = e.target.value.toLowerCase();
 		setSearchTerm(term);
 		const filtered = userData.filter(
-			(user) => user.name.toLowerCase().includes(term) || user.email.toLowerCase().includes(term)
+			(user) => user.username.toLowerCase().includes(term) || user.email.toLowerCase().includes(term)
 		);
 		setFilteredUsers(filtered);
 	};
+
+	const [isLoading,setIsLoading] = useState(true);
+
+	useEffect(() => {
+        const fetchStatCardData = async () => {
+            try {
+                const response = await fetch('/api/dashboard/admin/users/table');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch stat card data');
+                }
+                const data = await response.json();
+                setIsLoading(false);
+				console.log(data);
+                setUsersTable(data);
+            } catch (error) {
+                console.error('Error fetching stat card data:', error);
+            }
+        };
+
+        fetchStatCardData();
+    }, []);
+
+	if(isLoading) return <div>Loding..</div>
 
 	return (
 		<motion.div
@@ -67,7 +91,7 @@ const UsersTable = () => {
 					</thead>
 
 					<tbody className='divide-y divide-gray-700'>
-						{filteredUsers.map((user) => (
+						{UsersTable.map((user) => (
 							<motion.tr
 								key={user.id}
 								initial={{ opacity: 0 }}
@@ -78,11 +102,11 @@ const UsersTable = () => {
 									<div className='flex items-center'>
 										<div className='flex-shrink-0 h-10 w-10'>
 											<div className='h-10 w-10 rounded-full bg-gradient-to-r from-purple-400 to-blue-500 flex items-center justify-center text-white font-semibold'>
-												{user.name.charAt(0)}
+												{user.username.charAt(0)}
 											</div>
 										</div>
 										<div className='ml-4'>
-											<div className='text-sm font-medium text-gray-100'>{user.name}</div>
+											<div className='text-sm font-medium text-gray-100'>{user.username}</div>
 										</div>
 									</div>
 								</td>
@@ -99,12 +123,12 @@ const UsersTable = () => {
 								<td className='px-6 py-4 whitespace-nowrap'>
 									<span
 										className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-											user.status === "Active"
+											user.has_purchace === true
 												? "bg-green-800 text-green-100"
 												: "bg-red-800 text-red-100"
 										}`}
 									>
-										{user.status}
+										{user.has_purchace}
 									</span>
 								</td>
 

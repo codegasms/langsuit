@@ -1,16 +1,44 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { motion } from "framer-motion";
 
-const userGrowthData = [
-	{ month: "Jan", users: 1000 },
-	{ month: "Feb", users: 1500 },
-	{ month: "Mar", users: 2000 },
-	{ month: "Apr", users: 3000 },
-	{ month: "May", users: 4000 },
-	{ month: "Jun", users: 5000 },
-];
+import { useState, useEffect } from 'react';
+
+// const userGrowthData = [
+// 	{ month: "Jan", users: 1000 },
+// 	{ month: "Feb", users: 1500 },
+// 	{ month: "Mar", users: 2000 },
+// 	{ month: "Apr", users: 3000 },
+// 	{ month: "May", users: 4000 },
+// 	{ month: "Jun", users: 5000 },
+// ];
 
 const UserGrowthChart = () => {
+
+	const [isLoading,setIsLoading] = useState(true);
+
+	const [userGrowthData,useUserGrowthData] = useState([]);
+
+	useEffect(() => {
+        const fetchStatCardData = async () => {
+            try {
+                const response = await fetch('/api/dashboard/admin/users/line');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch stat card data');
+                }
+                const data = await response.json();
+                setIsLoading(false);
+				console.log(data);
+                useUserGrowthData(data);
+            } catch (error) {
+                console.error('Error fetching stat card data:', error);
+            }
+        };
+
+        fetchStatCardData();
+    }, []);
+
+	if(isLoading) return <div>Loding..</div>
+
 	return (
 		<motion.div
 			className='bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border border-gray-700'
@@ -23,7 +51,7 @@ const UserGrowthChart = () => {
 				<ResponsiveContainer width='100%' height='100%'>
 					<LineChart data={userGrowthData}>
 						<CartesianGrid strokeDasharray='3 3' stroke='#374151' />
-						<XAxis dataKey='month' stroke='#9CA3AF' />
+						<XAxis dataKey='day' stroke='#9CA3AF' />
 						<YAxis stroke='#9CA3AF' />
 						<Tooltip
 							contentStyle={{
