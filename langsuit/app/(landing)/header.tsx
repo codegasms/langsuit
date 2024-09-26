@@ -25,7 +25,7 @@ export const Header = () => {
         </ClerkLoading>
         <ClerkLoaded>
           <SignedIn>
-            <UserButton afterSignOutUrl="/"/>
+            <UserButton afterSignOutUrl="/" userProfileMode="navigation"/>
           </SignedIn>
           <SignedOut>
             <SignInButton

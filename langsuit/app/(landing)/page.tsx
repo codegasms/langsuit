@@ -21,9 +21,9 @@ export default function Home() {
       {/* <h1 className="text-green-500 font-bold">Welcome to Langsuit</h1> */}
       {/* This Is The Landing Page */}
       <div className="flex flex-col items-center gap-y-8">
-        <h1 className="text-xl lg:text-3xl font-semibold text-neutral-600 max-w-[480px] text-center">
+        <h1 className="text-xl lg:text-2xl font-semibold text-neutral-600 max-w-[480px] text-center">
           Learn, Practice & Master New Languages With
-          <span className="font-bold">&nbsp; LANGSUIT</span>
+          <span className="font-bold">{" "} LANGSUIT</span>
         </h1>
 
         <div className='flex flex-col items-center gap-y-3 max-w-[330px] w-full'>
