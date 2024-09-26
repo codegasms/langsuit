@@ -11,7 +11,6 @@ const id = {
     id: serial("id").primaryKey()
 }
 
-// Users Table
 export const users = pgTable("users", {
     id: serial("id").primaryKey(),
     username: varchar("username").notNull(),
@@ -22,11 +21,9 @@ export const users = pgTable("users", {
     hasPurchased: boolean('has_purchased').default(false).notNull()
 })
 
-// Instructor Table
 export const instructor = pgTable("instructor", {
     id: serial("id").primaryKey(),
     userId: integer("user_id").notNull().references(() => users.id),
-    // Add any instructor-specific fields here
 })
 
 export const instructorRelation = relations(instructor, ({ one, many }) => ({
@@ -37,7 +34,6 @@ export const instructorRelation = relations(instructor, ({ one, many }) => ({
     courses: many(courses),
 }))
 
-// Courses Table
 export const courses = pgTable("courses", {
     ...id,
     title: text("title").notNull(),
@@ -55,21 +51,16 @@ export const coursesRelation = relations(courses, ({ one }) => ({
     }),
 }))
 
-// Admin Table
 export const admin = pgTable("admin", {
     id: serial("id").primaryKey(),
     userId: integer("user_id").notNull().references(() => users.id),
-    // Add any admin-specific fields here
 })
 
-// Naive Table (purpose unclear, consider removing if not needed)
 export const naive = pgTable("naive", {
     id: serial("id").primaryKey(),
     userId: integer("user_id").notNull().references(() => users.id),
-    // Add any naive-specific fields here
 })
 
-// Follow List Table
 export const followList = pgTable('follow_list', {
     userId: integer("user_id").notNull().references(() => users.id),
     instructorId: integer("instructor_id").notNull().references(() => instructor.id)
@@ -88,7 +79,6 @@ export const followListRelations = relations(followList, ({ one }) => ({
     })
 }))
 
-// Live Stream Table
 export const liveStream = pgTable("live_stream", {
     ...id,
     ...timestamps,
@@ -113,7 +103,6 @@ export const liveStreamRelation = relations(liveStream, ({ one }) => ({
     })
 }))
 
-// Ticket Table
 export const ticket = pgTable("ticket", {
     ...id,
     ...timestamps,
@@ -132,7 +121,6 @@ export const ticketRelation = relations(ticket, ({ one }) => ({
     })    
 }))
 
-// User Progress Table
 export const userProgress = pgTable("user_progress", {
     userId: integer("user_id").primaryKey().references(() => users.id),
     userName: text("user_name").notNull().default("User"),
@@ -142,7 +130,6 @@ export const userProgress = pgTable("user_progress", {
     points: integer("points").notNull().default(0),
 });
 
-// Sales Table
 export const sales = pgTable("sales", {
     ...id,
     ...timestamps,
