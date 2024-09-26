@@ -1,5 +1,5 @@
 import {
-    ClerkProvider
+  ClerkProvider
 } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
@@ -26,13 +26,4 @@ export default function RootLayout({
       </html>
     </ClerkProvider>
   );
-}
-
-
-const MainLayout =({
-  children,
-}:Props) => {
-  return(
-    
-  )
 }
