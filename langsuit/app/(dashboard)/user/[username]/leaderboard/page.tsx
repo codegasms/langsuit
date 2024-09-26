@@ -9,20 +9,27 @@ import { motion } from 'framer-motion';
 // Dummy data defined before useState
 const dummyLeaderboardData = {
     weekly: [
-        { id: 1, userName: 'User1', points: 150 },
-        { id: 2, userName: 'User2', points: 120 },
-        { id: 3, userName: 'User3', points: 100 },
-        { id: 4, userName: 'User4', points: 90 },
-        { id: 5, userName: 'User5', points: 80 },
-        { id: 6, userName: 'Akshat', points: 70 }, // Example user
+        { day: 'Mon', points: 30 },
+        { day: 'Tue', points: 20 },
+        { day: 'Wed', points: 50 },
+        { day: 'Thu', points: 40 },
+        { day: 'Fri', points: 70 },
+        { day: 'Sat', points: 60 },
+        { day: 'Sun', points: 80 },
     ],
     monthly: [
-        { id: 1, userName: 'User1', points: 600 },
-        { id: 2, userName: 'User3', points: 580 },
-        { id: 3, userName: 'User2', points: 500 },
-        { id: 4, userName: 'User4', points: 450 },
-        { id: 5, userName: 'User5', points: 400 },
-        { id: 6, userName: 'Akshat', points: 300 }, // Example user
+        { month: 'Jan', points: 150 },
+        { month: 'Feb', points: 200 },
+        { month: 'Mar', points: 180 },
+        { month: 'Apr', points: 220 },
+        { month: 'May', points: 250 },
+        { month: 'Jun', points: 300 },
+        { month: 'Jul', points: 350 },
+        { month: 'Aug', points: 400 },
+        { month: 'Sep', points: 450 },
+        { month: 'Oct', points: 500 },
+        { month: 'Nov', points: 550 },
+        { month: 'Dec', points: 600 },
     ],
 };
 
@@ -151,24 +158,29 @@ const LeaderboardPage = () => {
                     <option value="monthly">Monthly</option>
                 </select>
                 <motion.button 
-                    onClick={() => setTimeframe(timeframe === 'weekly' ? 'monthly' : 'weekly')}
-                    initial={{ scale: 0.9, opacity: 0 }} 
-                    animate={{ scale: 1, opacity: 1 }} 
-                    transition={{ duration: 0.3 }}
-                    style={{
-                        padding: '10px 15px',
-                        background: '#4caf50',
-                        border: 'none',
-                        borderRadius: '5px',
-                        color: '#fff',
-                        cursor: 'pointer',
-                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                        transition: 'background 0.3s ease',
-                    }}
-                    whileHover={{ background: '#45a049' }}
-                >
-                    {timeframe === 'weekly' ? 'Switch to Monthly' : 'Switch to Weekly'}
-                </motion.button>
+    onClick={() => {
+        const newTimeframe = timeframe === 'weekly' ? 'monthly' : 'weekly';
+        setTimeframe(newTimeframe);
+        setLeaderboardData(dummyLeaderboardData[newTimeframe]);
+        setChartData(dummyChartData[newTimeframe]);
+    }}
+    initial={{ scale: 0.9, opacity: 0 }} 
+    animate={{ scale: 1, opacity: 1 }} 
+    transition={{ duration: 0.3 }}
+    style={{
+        padding: '10px 15px',
+        background: '#4caf50',
+        border: 'none',
+        borderRadius: '5px',
+        color: '#fff',
+        cursor: 'pointer',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+        transition: 'background 0.3s ease',
+    }}
+    whileHover={{ background: '#45a049' }}
+>
+    {timeframe === 'weekly' ? 'Switch to Monthly' : 'Switch to Weekly'}
+</motion.button>
             </div>
 
             <motion.h2 
