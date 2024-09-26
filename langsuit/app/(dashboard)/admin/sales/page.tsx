@@ -1,5 +1,6 @@
 "use client"
 
+import { useState,useEffect } from 'react'
 import { motion } from "framer-motion";
 import StatCard from "../_components/StatCard";
 import Header from "../_components/Header";
@@ -8,14 +9,38 @@ import SalesOverviewChart from "../(home)/_components/SalesOverviewChart";
 import SalesByCategoryChart from "./_components/SalesByCategoryChart";
 import DailySalesTrend from "./_components/DailySalesTrend";
 
-const salesStats = {
-	totalRevenue: "$1,234,567",
-	averageOrderValue: "$78.90",
-	conversionRate: "3.45%",
-	salesGrowth: "12.3%",
-};
+interface StatCardData {
+    totalRevenue: number;
+    avgOrderValue: number;
+    conversionRate: number;
+    salesGrowth: number;
+}
 
 const SalesPage = () => {
+	const [statCardData, setStatCardData] = useState<StatCardData | null>(null);
+
+	const [isLoading,setIsLoading] = useState(true);
+
+	useEffect(() => {
+        const fetchStatCardData = async () => {
+            try {
+                const response = await fetch('/api/dashboard/admin/sales/statcard');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch stat card data');
+                }
+                const data = await response.json();
+                setIsLoading(false);
+				console.log(data);
+                setStatCardData(data);
+            } catch (error) {
+                console.error('Error fetching stat card data:', error);
+            }
+        };
+
+        fetchStatCardData();
+    }, []);
+
+	if(isLoading) return <div>Loding..</div>
 	return (
 		<div className='flex-1 overflow-auto relative z-10'>
 			<Header title='Sales Dashboard' />
@@ -28,20 +53,20 @@ const SalesPage = () => {
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 1 }}
 				>
-					<StatCard name='Total Revenue' icon={DollarSign} value={salesStats.totalRevenue} color='#6366F1' />
+					<StatCard name='Total Revenue' icon={DollarSign} value={statCardData.totalRevenue} color='#6366F1' />
 					<StatCard
 						name='Avg. Order Value'
 						icon={ShoppingCart}
-						value={salesStats.averageOrderValue}
+						value={statCardData.avgOrderValue}
 						color='#10B981'
 					/>
 					<StatCard
 						name='Conversion Rate'
 						icon={TrendingUp}
-						value={salesStats.conversionRate}
+						value={statCardData.conversionRate}
 						color='#F59E0B'
 					/>
-					<StatCard name='Sales Growth' icon={CreditCard} value={salesStats.salesGrowth} color='#EF4444' />
+					<StatCard name='Sales Growth' icon={CreditCard} value={statCardData.salesGrowth} color='#EF4444' />
 				</motion.div>
 
 				<SalesOverviewChart />

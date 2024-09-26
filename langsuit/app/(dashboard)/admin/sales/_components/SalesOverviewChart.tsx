@@ -14,7 +14,7 @@ const monthlySalesData = [
 
 const SalesOverviewChart = () => {
 	const [selectedTimeRange, setSelectedTimeRange] = useState("This Month");
-
+	
 	return (
 		<motion.div
 			className='bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border border-gray-700 mb-8'

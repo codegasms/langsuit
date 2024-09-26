@@ -1,17 +1,41 @@
 import { motion } from "framer-motion";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { useEffect,useState } from 'react';
 
-const dailySalesData = [
-	{ name: "Mon", sales: 1000 },
-	{ name: "Tue", sales: 1200 },
-	{ name: "Wed", sales: 900 },
-	{ name: "Thu", sales: 1100 },
-	{ name: "Fri", sales: 1300 },
-	{ name: "Sat", sales: 1600 },
-	{ name: "Sun", sales: 1400 },
-];
+interface StatCardData {
+    totalRevenue: number;
+    avgOrderValue: number;
+    conversionRate: number;
+    salesGrowth: number;
+}
 
 const DailySalesTrend = () => {
+
+	const [dailySalesData, setDailySalesData] = useState<StatCardData | null>(null);
+
+	const [isLoading,setIsLoading] = useState(true);
+
+	useEffect(() => {
+        const fetchStatCardData = async () => {
+            try {
+                const response = await fetch('/api/dashboard/admin/sales/bar');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch stat card data');
+                }
+                const data = await response.json();
+                setIsLoading(false);
+				console.log(data);
+                setDailySalesData(data);
+            } catch (error) {
+                console.error('Error fetching stat card data:', error);
+            }
+        };
+
+        fetchStatCardData();
+    }, []);
+
+	if(isLoading) return <div>Loding..</div>
+	
 	return (
 		<motion.div
 			className='bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border border-gray-700'
