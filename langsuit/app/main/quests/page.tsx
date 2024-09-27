@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { getUserProgress, getUserSubscription } from '@/db/queries'; 
 import UserProgress from '@/components/UserProgress'; 
 
-const quests = [
+const Quests = [
     {
         title : "Earn 20XP" ,
         value :20 ,
@@ -61,7 +61,7 @@ const QuestsPage = async () => {
             />
             <div className="w-full flex flex-col items-center">
                 <Image
-                    src="/quests.svg"
+                    src="/Quests.svg"
                     alt="Quests"
                     height={90}
                     width={90}
@@ -70,10 +70,10 @@ const QuestsPage = async () => {
                     Quests
                 </h1>
                 <p className="text-muted-foreground text-center text-lg mb-6">
-                    Complete quests by earning points .
+                    Complete Quests by earning points .
                 </p>
                 <ul className = "w-full">
-                    {quests.map((quest)=> {
+                    {Quests.map((quest)=> {
                         const progress=(userProgress.points /quest.value)*100;
                     
                         return (
