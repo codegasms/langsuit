@@ -1,5 +1,5 @@
 import db from "@/db/drizzle";
-import { user,admin,instructor,naive } from "@/db/schema";
+import { users,admin,instructor,naive } from "@/db/schema";
 import { eq } from "drizzle-orm";
 class dbOrchestrator {
     static #instance: dbOrchestrator;
@@ -23,8 +23,8 @@ export abstract class User {
         try {
             const foundUser = await db
                 .select()                // Start the select query
-                .from(user)              // Specify the table
-                .where(eq(user.username, username))  // Use the 'eq' helper for WHERE clause
+                .from(users)              // Specify the table
+                .where(eq(users.username, username))  // Use the 'eq' helper for WHERE clause
                 .limit(1);               // Limit to 1 result (optional)
              
             // console.log("foundUser", foundUser);
@@ -76,9 +76,9 @@ class adminUser extends User {
     }
 
     public async insert(role:string,username:string,email:string,password:string) {
-        const userTable = await db.insert(user).values({username,email,password,role}).returning({insertedId: user.id});
+        const userTable = await db.insert(users).values({username,email,password,role}).returning({insertedId: users.id});
         const newUser = userTable[0];
-        await db.insert(admin).values({id:newUser.insertedId,username,email,password});
+        await db.insert(admin).values({userId:newUser.insertedId});
     }
 }
 
@@ -101,9 +101,9 @@ export class instructorUser extends User {
     }
 
     public async insert(role:string,username:string,email:string,password:string) {
-        const userTable = await db.insert(user).values({username,email,password,role}).returning({insertedId: user.id});
+        const userTable = await db.insert(users).values({username,email,password,role}).returning({insertedId: users.id});
         const newUser = userTable[0];
-        await db.insert(instructor).values({id:newUser.insertedId,username,email,password});
+        await db.insert(instructor).values({userId:newUser.insertedId});
     }
 }
 class naiveUser extends User {
@@ -125,8 +125,8 @@ class naiveUser extends User {
     }
 
     public async insert(role:string,username:string,email:string,password:string) {
-        const userTable = await db.insert(user).values({username,email,password,role}).returning({insertedId: user.id});
+        const userTable = await db.insert(users).values({username,email,password,role}).returning({insertedId: users.id});
         const newUser = userTable[0];
-        await db.insert(naive).values({id:newUser.insertedId,username,email,password});
+        await db.insert(naive).values({userId:newUser.insertedId});
     }
 }

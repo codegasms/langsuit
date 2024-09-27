@@ -45,23 +45,23 @@ export const Navigation = () => {
 
     const routes = [
         {
-            label: "Steam",
+            label: "Course",
             href: `/instructor/${self?.username}`,
             icon: Fullscreen,
         },
         {
-            label: "Keys",
-            href: `/instructor/${self?.username}/keys`,
+            label: "Live Stream",
+            href: `/instructor/${self?.username}/livestream`,
             icon: KeyRound,
         },
         {
-            label: "Chat",
-            href: `/instructor/${self?.username}/chat`,
+            label: "Student Engagement",
+            href: `/instructor/${self?.username}/engagement`,
             icon: MessageSquare,
         },
         {
-            label: "Community",
-            href: `/instructor/${self?.username}/community`,
+            label: "Revenue",
+            href: `/instructor/${self?.username}/revenue`,
             icon: Users,
         }
     ];
