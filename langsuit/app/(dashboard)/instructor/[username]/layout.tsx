@@ -17,7 +17,6 @@ const InstructorLayout = ({
     children,
 }: InstructorLayoutProps ) => {
     const self = instructorUser.instance.getSelfByUsername(params.username);
-    // console.log(self);
     return (
         <div className='h-screen w-screen bg-[#101214]'>            
             <Navbar />
