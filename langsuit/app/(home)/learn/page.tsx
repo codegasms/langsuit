@@ -34,6 +34,7 @@ const LearnPage = async () => {
       </StickyWrapper>
       <FeedWrapper>
         <Header title={course.title} />
+
       </FeedWrapper>
     </div>
   );
