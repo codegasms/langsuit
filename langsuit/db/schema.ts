@@ -47,17 +47,39 @@ export const instructorRelation = relations(instructor, ({ one, many }) => ({
   courses: many(courses),
 }));
 
+
 export const courses = pgTable("courses", {
-  ...id,
+  id: serial("id").primaryKey(),
   title: text("title").notNull(),
   imageSrc: text("image_src").notNull(),
-  instructorId: integer("instructor_id")
-    .notNull()
-    .references(() => instructor.id),
+  instructorId: integer("instructor_id").notNull(),
   category: text("category").notNull(),
   price: integer("price").default(0),
   visits: integer("visits").default(0),
+  description: text("description"),
+  level: text("level")
 });
+
+export const videos = pgTable("videos", {
+  id: serial("id").primaryKey(),
+  courseId: integer("course_id").notNull(),
+  title: text("title").notNull(),
+  videoUrl: text("video_url").notNull(),
+  duration: text("duration"),
+  thumbnailUrl: text("thumbnail_url"),
+  order: integer("order").default(0)
+});
+
+export const coursesRelations = relations(courses, ({ many }) => ({
+  videos: many(videos)
+}));
+
+export const videosRelations = relations(videos, ({ one }) => ({
+  course: one(courses, {
+    fields: [videos.courseId],
+    references: [courses.id]
+  })
+}));
 
 export const coursesRelation = relations(courses, ({ one }) => ({
   instructor: one(instructor, {
@@ -163,12 +185,10 @@ export const challengeProgressRelations = relations(
 );
 
 export const userProgress = pgTable("user_progress", {
-  userId: text("user_id").primaryKey(),
+  userId: integer("user_id").primaryKey().references(() => users.id),
   userName: text("user_name").notNull().default("User"),
   userImageSrc: text("user_image_src").notNull().default("/mascot.svg"),
-  activeCourseId: integer("active_course_id").references(() => courses.id, {
-    onDelete: "cascade",
-  }),
+  activeCourseId: integer("active_course_id").references(() => courses.id, { onDelete: "cascade" }),
   hearts: integer("hearts").notNull().default(5),
   points: integer("points").notNull().default(0),
 });
@@ -239,27 +259,19 @@ export const liveStreamRelation = relations(liveStream, ({ one }) => ({
   }),
 }));
 
-export const ticket = pgTable("ticket", {
-  ...id,
-  ...timestamps,
-  streamId: integer("stream_id")
-    .notNull()
-    .references(() => liveStream.id),
-  userId: integer("user_id")
-    .notNull()
-    .references(() => users.id),
-});
+export const tickets = pgTable("tickets", {
+    id: serial("id").primaryKey(), // Auto-incrementing primary key
+    courseId: integer("course_id")
+      .notNull()
+      .references(() => courses.id), // Foreign key to the courses table
+    userId: text("user_id"), // Optional: Foreign key to the users table
+    row: text("row").notNull(), // Row (A, B, C, etc.)
+    column: integer("column").notNull(), // Column (1, 2, 3, etc.)
+    purchasedAt: timestamp("purchased_at").defaultNow().notNull(), // When the ticket was purchased
+    isBooked: boolean("is_booked").default(false).notNull(), // Indicates if the ticket is booked
+  });
 
-export const ticketRelation = relations(ticket, ({ one }) => ({
-  liveStream: one(liveStream, {
-    fields: [ticket.streamId],
-    references: [liveStream.id],
-  }),
-  users: one(users, {
-    fields: [ticket.userId],
-    references: [users.id],
-  }),
-}));
+
 
 export const sales = pgTable("sales", {
   ...id,
