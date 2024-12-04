@@ -186,6 +186,13 @@ const main = async () => {
         order: 2,
         question: 'Which one of these is "the woman"?',
       },
+      {
+        id: 3,
+        lessonId: 2, // For Pronouns : Spanish Unit 1 = Learn the Basics of Spanish
+        type: "SELECT",
+        order: 1,
+        question: 'Which one of these is "he"?',
+      },
     ]);
 
     await db.insert(schema.challengeOptions).values([
@@ -236,6 +243,30 @@ const main = async () => {
         correct: false,
         imageSrc: "/man.svg",
         audioSrc: "/es_man.mp3",
+      },
+      {
+        id: 7,
+        challengeId: 3, // For 'Which one of these is "he"?' : Pronouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "él",
+        correct: true,
+        imageSrc: "/he.png",
+        audioSrc: "/es_he.mp3",
+      },
+      {
+        id: 8,
+        challengeId: 3, // For 'Which one of these is "he"?' : Pronouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "ella",
+        correct: false,
+        imageSrc: "/she.png",
+        audioSrc: "/es_she.mp3",
+      },
+      {
+        id: 9,
+        challengeId: 3, // For 'Which one of these is "he"?' : Pronouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "ellos",
+        correct: false,
+        imageSrc: "/they.png",
+        audioSrc: "/es_they.mp3",
       },
     ]);
 
