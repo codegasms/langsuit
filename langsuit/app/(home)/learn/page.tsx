@@ -14,6 +14,7 @@ import { redirect } from "next/navigation";
 import { Unit } from "./unit";
 
 const LearnPage = async () => {
+  // Fetch from the API's (mocked for now)
   const userProgressData = getUserProgress();
   const courseProgressData = getCourseProgress();
   const lessonPercentageData = getLessonPercentage();

@@ -60,7 +60,7 @@ class User {
 
 export const Navigation = () => {
     const pathname = usePathname();
-    const { username: paramUsername } = useParams(); 
+    const { username: paramUsername } =  useParams();
     const [user, setUser] = useState(null); 
     const [loading, setLoading] = useState(true); 
     const { collapsed } = useInstructorSidebar((state) => state);

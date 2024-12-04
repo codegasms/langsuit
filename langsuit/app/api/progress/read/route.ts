@@ -38,7 +38,7 @@ export const GET = async (req: Request) => {
 
         const progress = progressData[0];
 
-        // Retrieve the active course name
+        
         let courseName = 'N/A';
         if (progress.activeCourseID) {
             const courseData = await db
