@@ -3,19 +3,21 @@
 import db from "@/db/drizzle";
 import { getCourseById, getUserProgress } from "@/db/queries";
 import { userProgress } from "@/db/schema";
-
+import { auth, currentUser } from "@clerk/nextjs/server";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export const upsertUserProgress = async (courseId: number) => {
-  // const { userId } = await auth();
-  // const user = await currentUser();
+  const { userId } = await auth();
+  const user = await currentUser();
 
-  // if (!userId || !user) {
-  //   throw new Error("Unauthorized");
-  // }
+  console.log(`userId`, userId);
+  console.log(`user`, user?.id);
 
-  const userId = "1";
+  if (!userId || !user) {
+    throw new Error("Unauthorized");
+  }
 
   const course = await getCourseById(courseId);
 
@@ -26,27 +28,30 @@ export const upsertUserProgress = async (courseId: number) => {
   const existingUserProgress = await getUserProgress();
 
   if (existingUserProgress) {
-    await db.update(userProgress).set({
+    await db
+      .update(userProgress)
+      .set({
+        activeCourseId: courseId,
+        userName: user.firstName || "User",
+        userImageSrc: user.imageUrl || "/mascot.svg",
+      })
+      .where(eq(userProgress.userId, userId));
+
+    revalidatePath("/courses");
+    revalidatePath("/learn");
+    redirect("/learn");
+  } else {
+    await db.insert(userProgress).values({
+      userId,
       activeCourseId: courseId,
-      // userName: user.firstName || "User",
-      // userImageSrc: user.imageUrl || "/mascot.svg",
+      userName: user.firstName || "User",
+      userImageSrc: user.imageUrl || "/mascot.svg",
+      points: 0,
+      hearts: 5,
     });
 
     revalidatePath("/courses");
     revalidatePath("/learn");
     redirect("/learn");
   }
-
-  await db.insert(userProgress).values({
-    userId,
-    activeCourseId: courseId,
-    // userName: user.firstName || "User",
-    // userImageSrc: user.imageUrl || "/mascot.svg",
-    points: 0,
-    hearts: 5,
-  });
-
-  revalidatePath("/courses");
-  revalidatePath("/learn");
-  redirect("/learn");
 };
