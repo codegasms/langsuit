@@ -1,28 +1,71 @@
 "use client";
 
-import { useState } from "react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import Confetti from "react-confetti";
+import { useAudio, useMount, useWindowSize } from "react-use";
+import { toast } from "sonner";
+
+import { upsertChallengeProgress } from "@/actions/challenge-progress";
+import { reduceHearts } from "@/actions/user-progress";
+import { challengeOptions, challenges, userSubscription } from "@/db/schema";
+import { useHeartsModal } from "@/store/use-hearts-modal";
+import { usePracticeModal } from "@/store/use-practice-modal";
+
 import { Challenge } from "./challenge";
+import { Footer } from "./footer";
 import { Header } from "./header";
 import { QuestionBubble } from "./question-bubble";
+import { ResultCard } from "./result-card";
 
-type Props = {
+type Props ={
   initialPercentage: number;
   initialHearts: number;
   initialLessonId: number;
   initialLessonChallenges: (typeof challenges.$inferSelect & {
     completed: boolean;
-    challengeOptions: (typeof challengeOptions.$inferSelect)[];
+    challengeOptions: typeof challengeOptions.$inferSelect[];
   })[];
-  userSubscription: any;
+  userSubscription: typeof userSubscription.$inferSelect & {
+    isActive: boolean;
+  } | null;
 };
 
-const Quiz = ({
+export const Quiz = ({
   initialPercentage,
   initialHearts,
   initialLessonId,
   initialLessonChallenges,
   userSubscription,
 }: Props) => {
+  const { open: openHeartsModal } = useHeartsModal();
+  const { open: openPracticeModal } = usePracticeModal();
+
+  useMount(() => {
+    if (initialPercentage === 100) {
+      openPracticeModal();
+    }
+  });
+
+  const { width, height } = useWindowSize();
+
+  const router = useRouter();
+
+  const [finishAudio] = useAudio({ src: "/finish.mp3", autoPlay: true });
+  const [
+    correctAudio,
+    _c,
+    correctControls,
+  ] = useAudio({ src: "/correct.wav" });
+  const [
+    incorrectAudio,
+    _i,
+    incorrectControls,
+  ] = useAudio({ src: "/incorrect.wav" });
+  const [pending, startTransition] = useTransition();
+
+  const [lessonId] = useState(initialLessonId);
   const [hearts, setHearts] = useState(initialHearts);
   const [percentage, setPercentage] = useState(() => {
     return initialPercentage === 100 ? 0 : initialPercentage;
@@ -167,6 +210,8 @@ const Quiz = ({
 
   return (
     <>
+      {incorrectAudio}
+      {correctAudio}
       <Header
         hearts={hearts}
         percentage={percentage}
@@ -186,16 +231,19 @@ const Quiz = ({
                 options={options}
                 onSelect={onSelect}
                 status={status}
-                selectedOption={undefined}
-                disabled={undefined}
+                selectedOption={selectedOption}
+                disabled={pending}
                 type={challenge.type}
               />
             </div>
           </div>
         </div>
       </div>
+      <Footer
+        disabled={pending || !selectedOption}
+        status={status}
+        onCheck={onContinue}
+      />
     </>
   );
 };
-
-export default Quiz;
