@@ -12,7 +12,7 @@ export const getTopTenUsers = cache(async () => {
 
   const data = await db.query.userProgress.findMany({
     orderBy: (userProgress, { desc }) => [desc(userProgress.points)],
-    limit: 1,
+    limit: 10,
     columns: {
       userId: true,
       userName: true,
@@ -30,22 +30,19 @@ export const getCourses = cache(async () => {
 });
 
 export const getUserProgress = cache(async () => {
-  // const { userId }: { userId: string | null } = await auth();
-
-  // if (!userId) return null;
-
-  let userId = "1";
+  const { userId } = await auth();
+  if (!userId) return null;
 
   const data = await db.query.userProgress.findFirst({
     where: eq(userProgress.userId, userId),
-    // with: { activeCourse: true },
   });
 
   return data;
 });
 
 export const getUnits = cache(async () => {
-  const userId = 1;
+  const userId = await auth();
+
   const userProgress = await getUserProgress();
 
   if (!userProgress?.activeCourseId) {
