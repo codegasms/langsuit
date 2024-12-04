@@ -11,6 +11,7 @@ const FeedbackForm = () => {
     service: "",
     feedback: "",
     rating: "",
+    languagelearned : "",
   });
 
   const [errors, setErrors] = useState({
@@ -20,21 +21,32 @@ const FeedbackForm = () => {
     rating: "",
   });
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    validateField(name, value);
+  };
+
   const validateField = (name: string, value: string) => {
     let errorMsg = "";
 
     switch (name) {
-      case "name":
+        case "name":
         if (!/^[a-zA-Z\s]+$/.test(value)) {
           errorMsg = "Name can only contain letters and spaces.";
         }
         break;
-      case "email":
+        case "email":
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
           errorMsg = "Invalid email format.";
         }
         break;
-      case "phone":
+        case "phone":
         if (!/^\d{10}$/.test(value)) {
           if (/\D/.test(value)) {
             errorMsg = "Invalid characters for a mobile number.";
@@ -43,50 +55,61 @@ const FeedbackForm = () => {
           }
         }
         break;
-      case "rating":
+        case "rating":
         if (!/^[1-5]$/.test(value)) {
-          errorMsg = "Rating must be between 1 and 5.";
-        }
-        break;
-      default:
-        break;
+          errorMsg = "Rating must be between 1 and 5.";
+          }
+          break;
+        case "languagelearned":
+          if (!/^[a-zA-Z\s]+$/.test(value)) {
+              errorMsg = "It can only contain letters and spaces.";
+          }
+          break;      
+        default:
+          break;
     }
 
     setErrors((prevErrors) => ({ ...prevErrors, [name]: errorMsg }));
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-    validateField(name, value);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!errors.name && !errors.email && !errors.phone && !errors.rating) {
-      console.log(formData);
 
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        service: "",
-        feedback: "",
-        rating: "",
+    const hasErrors = Object.values(errors).some((error) => error !== "");
+    if (hasErrors) {
+      alert("Please fix errors before submitting.");
+      return;
+    }
+  
+    try {
+      const response = await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
-
-      setErrors({
-        name: "",
-        email: "",
-        phone: "",
-        rating: "",
-      });
-
-      alert("Feedback submitted successfully!");
-    } else {
-      alert("Please correct the errors before submitting.");
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        alert(result.message);
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          service: "",
+          feedback: "",
+          rating: "",
+          languagelearned: "",
+        });
+      } else {
+        alert(`Error: ${result.message}`);
+      }
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+      alert("An error occurred while submitting feedback.");
     }
   };
+  
 
   return (
     <div className="flex justify-center items-center min-h-screen">
@@ -187,6 +210,20 @@ const FeedbackForm = () => {
           {errors.rating && <p className="text-red-500 text-xs italic mt-1">{errors.rating}</p>}
         </div>
 
+        <div className="mb-6">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="languagelearned">
+            Language(s) learned
+          </label>
+          <input
+            className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="languagelearned"
+            name="languagelearned"
+            type="text"
+            placeholder="language(specify with space)"
+            value={formData.languagelearned}
+            onChange={handleChange}
+          />
+        </div>
         <div className="flex items-center justify-between">
           <Button variant="default" type="submit">
             Submit Feedback
