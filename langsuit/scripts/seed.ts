@@ -49,6 +49,20 @@ const main = async () => {
         description: "Learn the Basics of Spanish",
         order: 1,
       },
+      {
+        id: 2,
+        courseId: 4, // For Spanish
+        title: "Unit 2",
+        description: "A Little Bit Advanced",
+        order: 2,
+      },
+      {
+        id: 3,
+        courseId: 4, // For Spanish
+        title: "Unit 3",
+        description: "Advanced Spanish",
+        order: 3,
+      },
     ]);
 
     await db.insert(schema.lessons).values([
@@ -101,6 +115,60 @@ const main = async () => {
         order: 8,
         title: "Grammar",
       },
+      {
+        id: 9,
+        unitId: 2, // For Spanish Unit 2 = A Little Bit Advanced
+        order: 1,
+        title: "Advanced Nouns",
+      },
+      {
+        id: 10,
+        unitId: 2, // For Spanish Unit 2 = A Little Bit Advanced
+        order: 2,
+        title: "Advanced Pronouns",
+      },
+      {
+        id: 11,
+        unitId: 2, // For Spanish Unit 2 = A Little Bit Advanced
+        order: 3,
+        title: "Advanced Verbs",
+      },
+      {
+        id: 12,
+        unitId: 2, // For Spanish Unit 2 = A Little Bit Advanced
+        order: 4,
+        title: "Advanced Adjectives",
+      },
+      {
+        id: 13,
+        unitId: 2, // For Spanish Unit 2 = A Little Bit Advanced
+        order: 5,
+        title: "Advanced Grammar",
+      },
+      {
+        id: 14,
+        unitId: 3, // For Spanish Unit 3 = Advanced Spanish
+        order: 1,
+        title: "Expert Nouns",
+      },
+      {
+        id: 15,
+        unitId: 3, // For Spanish Unit 3 = Advanced Spanish
+        order: 2,
+        title: "Expert Pronouns",
+      },
+      {
+        id: 16,
+        unitId: 3, // For Spanish Unit 3 = Advanced Spanish
+        order: 3,
+        title: "Expert Verbs",
+      },
+      {
+        id: 17,
+        unitId: 3, // For Spanish Unit 3 = Advanced Spanish
+        order: 4,
+        title: "Expert Adjectives",
+      },
     ]);
 
     await db.insert(schema.challenges).values([
@@ -110,6 +178,13 @@ const main = async () => {
         type: "SELECT",
         order: 1,
         question: 'Which one of these is "the man"?',
+      },
+      {
+        id: 2,
+        lessonId: 1, // For Nouns : Spanish Unit 1 = Learn the Basics of Spanish
+        type: "SELECT",
+        order: 2,
+        question: 'Which one of these is "the woman"?',
       },
     ]);
 
@@ -137,6 +212,30 @@ const main = async () => {
         correct: false,
         imageSrc: "/robot.svg",
         audioSrc: "/es_robot.mp3",
+      },
+      {
+        id: 4,
+        challengeId: 2, // For 'Which one of these is "the woman"?' : Nouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "la mujer",
+        correct: true,
+        imageSrc: "/woman.svg",
+        audioSrc: "/es_woman.mp3",
+      },
+      {
+        id: 5,
+        challengeId: 2, // For 'Which one of these is "the woman"?' : Nouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "el robot",
+        correct: false,
+        imageSrc: "/robot.svg",
+        audioSrc: "/es_robot.mp3",
+      },
+      {
+        id: 6,
+        challengeId: 2, // For 'Which one of these is "the woman"?' : Nouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "el hombre",
+        correct: false,
+        imageSrc: "/man.svg",
+        audioSrc: "/es_man.mp3",
       },
     ]);
 
