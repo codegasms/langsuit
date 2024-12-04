@@ -1,11 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { motion, useAnimation } from "framer-motion";
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from "@/components/ui/card";
-import { Trophy, Star, Clock, BarChart2 } from 'lucide-react';
+import { motion, useAnimation } from "framer-motion";
+import { BarChart2, Clock, Star, Trophy } from 'lucide-react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const DUMMY_QUESTS = [
   {
@@ -123,6 +124,8 @@ const QuestsPage = () => {
   const [userSubscriptionData, setUserSubscriptionData] = useState<any>();
   const [quests, setQuests] = useState<any>();
 
+  const router = useRouter();
+
   useEffect(() => {
     const fetchDetails = async () => {
       const userProgress = await getUserProgress();
@@ -147,7 +150,7 @@ const QuestsPage = () => {
     '你', '我', '他', '她', '它', '们', '好', '是', '不', '在', '有', '个', '这', '那', '哪',
     'Ñ', 'Ç', 'Ü', 'Ö', 'Ş', 'İ', 'Ğ', 'Ą', 'Ę', 'Ć', 'Ł', 'Ń', 'Ś', 'Ź', 'Ż',
     , 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض',
-     'β',  'δ', 'ε', 'ζ', 'η', 'θ',  'κ', 'λ', 'μ',  'ξ', 
+     'β',  'δ', 'ε', 'ζ', 'η', 'θ',  'κ', 'λ', 'μ',  'ξ',
   ];
 
   return (
@@ -242,12 +245,13 @@ const QuestsPage = () => {
                     </div>
 
                     {!isCompleted && (
-                      <Button
+                        <Button
+                        onClick={() => router.push('/anim')}
                         variant="outline"
                         className="w-full mt-2 bg-primary/10 text-primary hover:bg-primary/20"
-                      >
+                        >
                         Start Quest
-                      </Button>
+                        </Button>
                     )}
                   </CardContent>
                 </Card>
@@ -285,4 +289,3 @@ const QuestsPage = () => {
 };
 
 export default QuestsPage;
-
