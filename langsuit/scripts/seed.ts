@@ -13,27 +13,132 @@ const main = async () => {
   try {
     console.log("Seeding database...");
 
-    await db.delete(schema.admin);
-    await db.delete(schema.sales);
-    await db.delete(schema.courses);
-    await db.delete(schema.followList);
-    await db.delete(schema.instructor);
-    await db.delete(schema.liveStream);
-    await db.delete(schema.naive);
-    await db.delete(schema.ticket);
-    await db.delete(schema.userProgress);
-    await db.delete(schema.users);
+    // await db.delete(schema.admin);
+    // await db.delete(schema.sales);
+    // await db.delete(schema.courses);
+    // await db.delete(schema.followList);
+    // await db.delete(schema.instructor);
+    // await db.delete(schema.liveStream);
+    // await db.delete(schema.naive);
+    // await db.delete(schema.ticket);
+    // await db.delete(schema.userProgress);
+    // await db.delete(schema.users);
 
     // await db.insert(schema.admin).values(admin);
-    await db.insert(schema.courses).values(courses);
+    // await db.insert(schema.courses).values(courses);
     // await db.insert(schema.followList).values(follow_list);
-    await db.insert(schema.instructor).values(instructor);
+    // await db.insert(schema.instructor).values(instructor);
     // await db.insert(schema.liveStream).values(live_stream);
-    await db.insert(schema.naive).values(naive);
-    await db.insert(schema.sales).values(sales);
+    // await db.insert(schema.naive).values(naive);
+    // await db.insert(schema.sales).values(sales);
     // await db.insert(schema.ticket).values(ticket);
-    await db.insert(schema.userProgress).values(user_progress);
-    await db.insert(schema.users).values(users);
+    // await db.insert(schema.userProgress).values(user_progress);
+    // await db.insert(schema.users).values(users);
+
+    await db.delete(schema.units);
+    await db.delete(schema.lessons);
+    await db.delete(schema.challenges);
+    await db.delete(schema.challengeOptions);
+    await db.delete(schema.challengeProgress);
+
+    await db.insert(schema.units).values([
+      {
+        id: 1,
+        courseId: 4, // For Spanish
+        title: "Unit 1",
+        description: "Learn the Basics of Spanish",
+        order: 1,
+      },
+    ]);
+
+    await db.insert(schema.lessons).values([
+      {
+        id: 1,
+        unitId: 1, // For Spanish Unit 1 = Learn the Basics of Spanish
+        order: 1,
+        title: "Nouns",
+      },
+      {
+        id: 2,
+        unitId: 1, // For Spanish Unit 1 = Learn the Basics of Spanish
+        order: 2,
+        title: "Pronouns",
+      },
+      {
+        id: 3,
+        unitId: 1, // For Spanish Unit 1 = Learn the Basics of Spanish
+        order: 3,
+        title: "Verbs",
+      },
+      {
+        id: 4,
+        unitId: 1, // For Spanish Unit 1 = Learn the Basics of Spanish
+        order: 4,
+        title: "Adjectives",
+      },
+      {
+        id: 5,
+        unitId: 1, // For Spanish Unit 1 = Learn the Basics of Spanish
+        order: 5,
+        title: "Grammar",
+      },
+
+      {
+        id: 6,
+        unitId: 1, // For Spanish Unit 1 = Learn the Basics of Spanish
+        order: 6,
+        title: "Verbs",
+      },
+      {
+        id: 7,
+        unitId: 1, // For Spanish Unit 1 = Learn the Basics of Spanish
+        order: 7,
+        title: "Adjectives",
+      },
+      {
+        id: 8,
+        unitId: 1, // For Spanish Unit 1 = Learn the Basics of Spanish
+        order: 8,
+        title: "Grammar",
+      },
+    ]);
+
+    await db.insert(schema.challenges).values([
+      {
+        id: 1,
+        lessonId: 1, // For Nouns : Spanish Unit 1 = Learn the Basics of Spanish
+        type: "SELECT",
+        order: 1,
+        question: 'Which one of these is "the man"?',
+      },
+    ]);
+
+    await db.insert(schema.challengeOptions).values([
+      {
+        id: 1,
+        challengeId: 1, // For 'Which one of these is "the man"?' : Nouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "el hombre",
+        correct: true,
+        imageSrc: "/man.svg",
+        audioSrc: "/es_man.mp3",
+      },
+      {
+        id: 2,
+        challengeId: 1, // For 'Which one of these is "the man"?' : Nouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "la mujer",
+        correct: false,
+        imageSrc: "/woman.svg",
+        audioSrc: "/es_woman.mp3",
+      },
+      {
+        id: 3,
+        challengeId: 1, // For 'Which one of these is "the man"?' : Nouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "el robot",
+        correct: false,
+        imageSrc: "/robot.svg",
+        audioSrc: "/es_robot.mp3",
+      },
+    ]);
 
     console.log("Database seeded successfully");
   } catch (error) {
@@ -50,8 +155,8 @@ const courses = [
   {
     id: 1,
     title: "English",
-    imageSrc: "/US - United States.svg",
-    instructorId: 1,
+    image_src: "/US - United States.svg",
+    instructor_id: 1,
     category: "language",
     price: 50000,
     visits: 34,
@@ -59,8 +164,8 @@ const courses = [
   {
     id: 2,
     title: "Hindi",
-    imageSrc: "/IN - India.svg",
-    instructorId: 2,
+    image_src: "/IN - India.svg",
+    instructor_id: 2,
     category: "language",
     price: 50000,
     visits: 433,
@@ -68,8 +173,8 @@ const courses = [
   {
     id: 3,
     title: "Japanese",
-    imageSrc: "/JP - Japan.svg",
-    instructorId: 3,
+    image_src: "/JP - Japan.svg",
+    instructor_id: 3,
     category: "vowels",
     price: 40000,
     visits: 324,
@@ -77,8 +182,8 @@ const courses = [
   {
     id: 4,
     title: "Espanol",
-    imageSrc: "/ES - Spain.svg",
-    instructorId: 4,
+    image_src: "/ES - Spain.svg",
+    instructor_id: 4,
     category: "vowels",
     price: 30000,
     visits: 32,
