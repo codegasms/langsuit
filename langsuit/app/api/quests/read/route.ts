@@ -1,133 +1,184 @@
-import { NextResponse } from 'next/server';
-import db from '@/db/drizzle'; 
-import { Quests, userQuests, user } from '@/db/schema'; // Import your schema
-import { eq } from 'drizzle-orm'
+import { NextRequest, NextResponse } from 'next/server';
+import db from '@/db/drizzle';
+import { user, Quests, userQuests } from '@/db/schema';
+import { eq } from 'drizzle-orm';
+import { User } from '@clerk/nextjs/server'; // Correct server-side import
 
-async function getUserIdByUsername(username: string): Promise<number | null> {
-    try {
-        const self = await db
-            .select({ id: user.id })
-            .from(user)
-            .where(eq(user.username,username))
-            .limit(1);
-
-        return self.length > 0 ? self[0].id : null;
-    } catch (err) {
-        console.error('Error fetching user ID:', err);
-        return null;
-    }
-}
-
-// Function to get user-specific quests
-async function getUserQuests(userId: number) {
-    try {
-        const questsData = await db
-            .select({
-                questId: Quests.id,
-                title: Quests.title,
-                description: Quests.description,
-                rewardPoints: Quests.rewardPoints,
-                expiresAt: Quests.expiresAt,
-                progress: userQuests.progress,
-                completed: userQuests.completed,
-            })
-            .from(userQuests)
-            .innerJoin(Quests, eq(Quests.id,userQuests.questId))
-            .where(eq(userQuests.userId,userId));
-
-        return questsData.map((quest) => ({
-            id: quest.questId,
-            title: quest.title,
-            description: quest.description,
-            rewardPoints: quest.rewardPoints,
-            expiresAt: quest.expiresAt.toISOString().split('T')[0], // Formatting date
-            progress: quest.progress,
-            completed: quest.completed,
-            timeSpent: 0, // Placeholder for 'timeSpent', modify as per your actual data
-            difficulty: "Medium", // Placeholder, modify based on your logic
-        }));
-    } catch (err) {
-        console.error('Error fetching user quests:', err);
-        return []; // Return an empty array in case of an error
-    }
-}
-
-// Dummy data fallback in case of no data from DB
-const dummyQuests = [
+// Dummy Quest Data
+export const DUMMY_QUESTS = [
   {
     id: 1,
-    title: "Learn JavaScript Basics",
-    progress: 80,
-    description: "Complete the beginner JavaScript quest.",
-    rewardPoints: 100,
+    title: "Earn 20 XP",
+    progress: 0,
+    description: "Start your learning journey!",
+    rewardPoints: 20,
     difficulty: "Easy",
-    timeSpent: 5,
+    timeSpent: 0,
     completed: false,
-    expiresAt: "2024-10-01",
+    expiresAt: new Date(new Date().setMonth(new Date().getMonth() + 1))
+      .toISOString()
+      .split('T')[0],
   },
   {
     id: 2,
-    title: "Master React",
-    progress: 50,
-    description: "Learn advanced concepts in React.",
-    rewardPoints: 150,
-    difficulty: "Hard",
-    timeSpent: 15,
+    title: "Complete 5 Lessons",
+    progress: 0,
+    description: "Expand your knowledge by completing 5 lessons.",
+    rewardPoints: 50,
+    difficulty: "Medium",
+    timeSpent: 0,
     completed: false,
-    expiresAt: "2024-11-01",
+    expiresAt: new Date(new Date().setDate(new Date().getDate() + 14))
+      .toISOString()
+      .split('T')[0],
   },
   {
     id: 3,
-    title: "Intro to Next.js",
-    progress: 100,
-    description: "Complete the Next.js introduction course.",
-    rewardPoints: 200,
+    title: "Earn 100 XP in a Day",
+    progress: 0,
+    description: "Challenge yourself to earn 100 XP in a single day!",
+    rewardPoints: 100,
+    difficulty: "Hard",
+    timeSpent: 0,
+    completed: false,
+    expiresAt: new Date(new Date().setDate(new Date().getDate() + 7))
+      .toISOString()
+      .split('T')[0],
+  },
+  {
+    id: 4,
+    title: "Maintain a 3-Day Streak",
+    progress: 0,
+    description: "Stay consistent and keep learning for 3 consecutive days.",
+    rewardPoints: 60,
     difficulty: "Medium",
-    timeSpent: 10,
-    completed: true,
-    expiresAt: "2024-12-01",
+    timeSpent: 0,
+    completed: false,
+    expiresAt: new Date(new Date().setMonth(new Date().getMonth() + 2))
+      .toISOString()
+      .split('T')[0],
+  },
+  {
+    id: 5,
+    title: "Master a New Topic",
+    progress: 0,
+    description: "Dive deep into a topic and complete all its lessons.",
+    rewardPoints: 80,
+    difficulty: "Hard",
+    timeSpent: 0,
+    completed: false,
+    expiresAt: new Date(new Date().setMonth(new Date().getMonth() + 1))
+      .toISOString()
+      .split('T')[0],
+  },
+  {
+    id: 6,
+    title: "Answer 10 Quiz Questions",
+    progress: 0,
+    description: "Test your knowledge by completing 10 quiz questions.",
+    rewardPoints: 30,
+    difficulty: "Easy",
+    timeSpent: 0,
+    completed: false,
+    expiresAt: new Date(new Date().setDate(new Date().getDate() + 10))
+      .toISOString()
+      .split('T')[0],
   },
 ];
 
-// GET request handler for quests API
-export const GET = async (req: Request) => {
-    try {
-        // Get the username from the query parameters
-        const { searchParams } = new URL(req.url);
-        const username = searchParams.get('username');
 
-        if (!username) {
-            return NextResponse.json(
-                { message: "Username not provided" },
-                { status: 400 }
-            );
-        }
+// Function to fetch user ID by username
+async function getUserIdByUsername(username: string): Promise<string | null> {
+  try {
+    const userList = await users.getUserList({
+      query: {
+        'publicMetadata.username': username, // Match your Clerk metadata schema
+      },
+      limit: 1,
+    });
 
-        // Get userId from the username
-        const userId = await getUserIdByUsername(username);
-
-        if (!userId) {
-            return NextResponse.json(
-                { message: "User not found" },
-                { status: 404 }
-            );
-        }
-
-        // Fetch quests for the user
-        let quests = await getUserQuests(userId);
-
-        // Fallback to dummy data if no quests are found
-        if (quests.length === 0) {
-            quests = dummyQuests;
-        }
-
-        // Return the quest data
-        return NextResponse.json(quests, { status: 200 });
-    } catch (err) {
-        console.error('Error fetching user quests:', err);
-        return NextResponse.json(
-            { message: "Internal Server Error" },
-            { status: 500 }
-        );
+    if (userList.length === 0) {
+      console.error(`User with username "${username}" not found.`);
+      return null;
     }
+
+    return userList[0].id;
+  } catch (err) {
+    console.error('Error fetching user ID:', err);
+    return null;
+  }
+}
+
+// Function to fetch quests for a user
+async function getUserQuests(userId: string) {
+  try {
+    const questsData = await db
+      .select({
+        questId: Quests.id,
+        title: Quests.title,
+        description: Quests.description,
+        rewardPoints: Quests.rewardPoints,
+        expiresAt: Quests.expiresAt,
+        progress: userQuests.progress,
+        completed: userQuests.completed,
+      })
+      .from(userQuests)
+      .innerJoin(Quests, eq(Quests.id, userQuests.questId))
+      .where(eq(userQuests.userId, userId));
+
+    return questsData.map((quest) => ({
+      id: quest.questId,
+      title: quest.title,
+      description: quest.description,
+      rewardPoints: quest.rewardPoints,
+      expiresAt: quest.expiresAt.toISOString().split('T')[0],
+      progress: quest.progress,
+      completed: quest.completed,
+      timeSpent: 0,
+      difficulty: "Medium",
+    }));
+  } catch (err) {
+    console.error('Error fetching user quests:', err);
+    return [];
+  }
+}
+
+// GET handler
+export const GET = async (req: NextRequest) => {
+  try {
+    const username = req.nextUrl.searchParams.get('username');
+
+    if (!username) {
+      return NextResponse.json(
+        { message: "Username not provided" },
+        { status: 400 }
+      );
+    }
+
+    const userId = await getUserIdByUsername(username);
+
+    if (!userId) {
+      return NextResponse.json(
+        { message: "User not found" },
+        { status: 404 }
+      );
+    }
+
+    let quests = await getUserQuests(userId);
+
+    if (quests.length === 0) {
+      quests = DUMMY_QUESTS; // Fallback to dummy data
+    }
+
+    return NextResponse.json(quests, { status: 200 });
+  } catch (err) {
+    console.error('Error in GET method:', err);
+    return NextResponse.json(
+      {
+        message: "Internal Server Error",
+        error: err instanceof Error ? err.message : "Unknown error",
+      },
+      { status: 500 }
+    );
+  }
 };

@@ -3,22 +3,39 @@ import { StickyWrapper } from "@/components/sticky-wrapper";
 import { UserProgress } from "@/components/user-progress";
 import { Header } from "./header";
 
-import { getCourseById, getUnits, getUserProgress } from "@/db/queries";
+import {
+  getCourseById,
+  getCourseProgress,
+  getLessonPercentage,
+  getUnits,
+  getUserProgress,
+} from "@/db/queries";
 import { redirect } from "next/navigation";
 import { Unit } from "./unit";
 
 const LearnPage = async () => {
+  // Fetch from the API's (mocked for now)
   const userProgressData = getUserProgress();
+  const courseProgressData = getCourseProgress();
+  const lessonPercentageData = getLessonPercentage();
   const unitsData = getUnits();
 
-  const [userProgress, units] = await Promise.all([
-    userProgressData,
-    unitsData,
-  ]);
+  const [userProgress, units, courseProgress, lessonPercentage] =
+    await Promise.all([
+      userProgressData,
+      unitsData,
+      courseProgressData,
+      lessonPercentageData,
+    ]);
 
   if (!userProgress || !userProgress.activeCourseId) {
     redirect("/courses");
   }
+
+  if (!courseProgress) {
+    redirect("/courses");
+  }
+
   const course = await getCourseById(userProgress.activeCourseId);
 
   return (
@@ -26,9 +43,7 @@ const LearnPage = async () => {
       <StickyWrapper>
         <UserProgress
           activeCourse={{
-            // title: "English",
-            // imageSrc: "/US - United States.svg",
-            title: course.title,
+            title: userProgress.title,
             imageSrc: course.imageSrc,
           }}
           hearts={userProgress.hearts}
@@ -46,8 +61,10 @@ const LearnPage = async () => {
               title={unit.title}
               description={unit.description}
               lessons={unit.lessons}
-              activeLesson={undefined}
-              activeLessonPercentage={0}
+              activeLesson={courseProgress.activeLesson as typeof lessons.$inferSelect & {
+                unit: typeof unitsSchema.$inferSelect;
+              } | undefined}
+              activeLessonPercentage={lessonPercentage}
             />
           </div>
         ))}
