@@ -104,18 +104,6 @@ const main = async () => {
         title: "Verbs",
       },
       {
-        id: 7,
-        unitId: 1, // For Spanish Unit 1 = Learn the Basics of Spanish
-        order: 7,
-        title: "Adjectives",
-      },
-      {
-        id: 8,
-        unitId: 1, // For Spanish Unit 1 = Learn the Basics of Spanish
-        order: 8,
-        title: "Grammar",
-      },
-      {
         id: 9,
         unitId: 2, // For Spanish Unit 2 = A Little Bit Advanced
         order: 1,
@@ -134,18 +122,6 @@ const main = async () => {
         title: "Advanced Verbs",
       },
       {
-        id: 12,
-        unitId: 2, // For Spanish Unit 2 = A Little Bit Advanced
-        order: 4,
-        title: "Advanced Adjectives",
-      },
-      {
-        id: 13,
-        unitId: 2, // For Spanish Unit 2 = A Little Bit Advanced
-        order: 5,
-        title: "Advanced Grammar",
-      },
-      {
         id: 14,
         unitId: 3, // For Spanish Unit 3 = Advanced Spanish
         order: 1,
@@ -156,18 +132,6 @@ const main = async () => {
         unitId: 3, // For Spanish Unit 3 = Advanced Spanish
         order: 2,
         title: "Expert Pronouns",
-      },
-      {
-        id: 16,
-        unitId: 3, // For Spanish Unit 3 = Advanced Spanish
-        order: 3,
-        title: "Expert Verbs",
-      },
-      {
-        id: 17,
-        unitId: 3, // For Spanish Unit 3 = Advanced Spanish
-        order: 4,
-        title: "Expert Adjectives",
       },
     ]);
 
@@ -192,6 +156,13 @@ const main = async () => {
         type: "SELECT",
         order: 1,
         question: 'Which one of these is "he"?',
+      },
+      {
+        id: 4,
+        lessonId: 2, // For Pronouns : Spanish Unit 1 = Learn the Basics of Spanish
+        type: "ASSIST",
+        order: 2,
+        question: '"they"',
       },
     ]);
 
@@ -265,6 +236,30 @@ const main = async () => {
         challengeId: 3, // For 'Which one of these is "he"?' : Pronouns : Spanish Unit 1 = Learn the Basics of Spanish
         text: "ellos",
         correct: false,
+        imageSrc: "/they.png",
+        audioSrc: "/es_they.mp3",
+      },
+      {
+        id: 10,
+        challengeId: 4, // For 'Which one of these is "they"?' : Pronouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "él",
+        correct: false,
+        imageSrc: "/he.png",
+        audioSrc: "/es_he.mp3",
+      },
+      {
+        id: 11,
+        challengeId: 4, // For 'Which one of these is "they"?' : Pronouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "ella",
+        correct: false,
+        imageSrc: "/she.png",
+        audioSrc: "/es_she.mp3",
+      },
+      {
+        id: 12,
+        challengeId: 4, // For 'Which one of these is "they"?' : Pronouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "ellos",
+        correct: true,
         imageSrc: "/they.png",
         audioSrc: "/es_they.mp3",
       },
