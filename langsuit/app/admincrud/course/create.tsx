@@ -6,6 +6,8 @@ export const CourseCreate = () => {
       <SimpleForm>
         <TextInput source="title" validate={[required()]} label="Title" />
         <TextInput source="imageSrc" validate={[required()]} label="Image" />
+        <TextInput source="instructorId" validate={[required()]} label="Instructor" />
+        <TextInput source="category" validate={[required()]} label="Category" />
       </SimpleForm>
     </Create>
   );

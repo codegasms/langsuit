@@ -7,6 +7,8 @@ export const CourseList = () => {
         <NumberField source="id" />
         <TextField source="title" />
         <TextField source="imageSrc" />
+        <NumberField source="instructorId" />
+        <TextField source="category" />
       </Datagrid>
     </List>
   );
