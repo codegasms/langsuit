@@ -239,27 +239,26 @@ export const liveStreamRelation = relations(liveStream, ({ one }) => ({
   }),
 }));
 
-export const ticket = pgTable("ticket", {
-  ...id,
-  ...timestamps,
-  streamId: integer("stream_id")
-    .notNull()
-    .references(() => liveStream.id),
-  userId: integer("user_id")
-    .notNull()
-    .references(() => users.id),
-});
+export const tickets = pgTable("tickets", {
+    id: serial("id").primaryKey(), // Auto-incrementing primary key
+    courseId: integer("course_id")
+      .notNull()
+      .references(() => courses.id), // Foreign key to the courses table
+    userId: integer("user_id").references(() => users.id), // Optional: Foreign key to the users table
+    row: text("row").notNull(), // Row (A, B, C, etc.)
+    column: integer("column").notNull(), // Column (1, 2, 3, etc.)
+    purchasedAt: timestamp("purchased_at").defaultNow().notNull(), // When the ticket was purchased
+    isBooked: boolean("is_booked").default(false).notNull(), // Indicates if the ticket is booked
+  });
 
-export const ticketRelation = relations(ticket, ({ one }) => ({
-  liveStream: one(liveStream, {
-    fields: [ticket.streamId],
-    references: [liveStream.id],
-  }),
-  users: one(users, {
-    fields: [ticket.userId],
-    references: [users.id],
-  }),
-}));
+export const userProgress = pgTable("user_progress", {
+    userId: integer("user_id").primaryKey().references(() => users.id),
+    userName: text("user_name").notNull().default("User"),
+    userImageSrc: text("user_image_src").notNull().default("/mascot.svg"),
+    activeCourseId: integer("active_course_id").references(() => courses.id, { onDelete: "cascade" }),
+    hearts: integer("hearts").notNull().default(5),
+    points: integer("points").notNull().default(0),
+});
 
 export const sales = pgTable("sales", {
   ...id,

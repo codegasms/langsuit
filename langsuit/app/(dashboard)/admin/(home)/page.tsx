@@ -19,24 +19,32 @@ interface StatCardData {
 }
 
 const OverviewPage = () => {
-	const [statCardData, setStatCardData] = useState<StatCardData | null>(null);
+    const [statCardData, setStatCardData] = useState<StatCardData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    
     useEffect(() => {
-        const fetchStatCardData = async () => {
-            try {
-                const response = await fetch('/api/dashboard/admin/overview/statcard');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch stat card data');
+        const fetchStatCardData = () => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', '/api/dashboard/admin/overview/statcard', true);
+            
+            xhr.onload = function() {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    const data = JSON.parse(xhr.responseText);
+                    setIsLoading(false);
+                    console.log(data);
+                    setStatCardData(data);
+                } else {
+                    console.error('Failed to fetch stat card data');
                 }
-                const data = await response.json();
-                setIsLoading(false);
-				console.log(data);
-                setStatCardData(data);
-            } catch (error) {
-                console.error('Error fetching stat card data:', error);
-            }
+            };
+            
+            xhr.onerror = function() {
+                console.error('Error fetching stat card data:', xhr.statusText);
+            };
+            
+            xhr.send();
         };
-
+    
         fetchStatCardData();
     }, []);
 	
