@@ -1,5 +1,5 @@
 import db from "@/db/drizzle";
-import { courses, units, userProgress } from "@/db/schema";
+import { challengeProgress, courses, units, userProgress } from "@/db/schema";
 import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { cache } from "react";
@@ -45,6 +45,7 @@ export const getUserProgress = cache(async () => {
 });
 
 export const getUnits = cache(async () => {
+  const userId = 1;
   const userProgress = await getUserProgress();
 
   if (!userProgress?.activeCourseId) {
@@ -52,19 +53,18 @@ export const getUnits = cache(async () => {
   }
 
   const data = await db.query.units.findMany({
-    // orderBy: (units, { asc }) => [asc(units.order)],
+    orderBy: (units, { asc }) => [asc(units.order)],
     where: eq(units.courseId, userProgress.activeCourseId),
     with: {
       lessons: {
-        // orderBy: (lessons, { asc }) => [asc(lessons.order)],
+        orderBy: (lessons, { asc }) => [asc(lessons.order)],
         with: {
           challenges: {
-            // orderBy: (challenges, { asc }) => [asc(challenges.order)],
+            orderBy: (challenges, { asc }) => [asc(challenges.order)],
             with: {
-              // challengeProgress: {
-              //   where: eq(challengeProgress.userId, userId),
-              // },
-              challengeProgress: true,
+              challengeProgress: {
+                where: eq(challengeProgress.userId, userId),
+              },
             },
           },
         },
