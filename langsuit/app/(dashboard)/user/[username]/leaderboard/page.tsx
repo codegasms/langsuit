@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { motion } from 'framer-motion';
 
-// Dummy data defined before useState
+
 const dummyLeaderboardData = {
     weekly: [
         { day: 'Mon', points: 30 },
@@ -65,7 +65,8 @@ const LeaderboardPage = () => {
             setError(null);
 
             try {
-                const response = await fetch(`http://localhost:3000/api/leaderboard/read?user_id=1`); // Replace with dynamic user ID if necessary
+                const response = await fetch(`http://localhost:3000/api/leaderboard/read?user_id=1`); 
+                console.log(response);// Replace with dynamic user ID if necessary
 
                 if (!response.ok) {
                     throw new Error('Network response was not ok');

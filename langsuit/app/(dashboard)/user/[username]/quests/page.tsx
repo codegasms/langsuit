@@ -9,9 +9,9 @@ import { motion } from 'framer-motion';
 const dummyQuests = [
   {
     id: 1,
-    title: "Learn JavaScript Basics",
+    title: "Learn Spanish Basics",
     progress: 80,
-    description: "Complete the beginner JavaScript quest.",
+    description: "Complete the beginner Spanish quest.",
     rewardPoints: 100,
     difficulty: "Easy",
     timeSpent: 5,
@@ -20,9 +20,9 @@ const dummyQuests = [
   },
   {
     id: 2,
-    title: "Master React",
+    title: "Master Mandarin",
     progress: 50,
-    description: "Learn advanced concepts in React.",
+    description: "Learn advanced concepts in Mandarin.",
     rewardPoints: 150,
     difficulty: "Hard",
     timeSpent: 15,
@@ -31,9 +31,9 @@ const dummyQuests = [
   },
   {
     id: 3,
-    title: "Intro to Next.js",
+    title: "Intro to French",
     progress: 100,
-    description: "Complete the Next.js introduction course.",
+    description: "Complete the French introduction course.",
     rewardPoints: 200,
     difficulty: "Medium",
     timeSpent: 10,
@@ -47,14 +47,14 @@ const COLORS = ['#FFEC99', '#FFD700', '#FFB6C1'];
 const QuestsPage = () => {
   const { username } = useParams();
   const [quests, setQuests]  = useState(dummyQuests);
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null); 
 
   useEffect(() => {
-    // Fetch data from the API
+    
     const fetchQuests = async () => {
       try {
-        setLoading(true); // Set loading to true at the start of fetch
+        setLoading(true); 
         const response = await fetch(`http://localhost:3000/api/quests/read?username=${username}`);
 
         if (!response.ok) {
@@ -63,17 +63,17 @@ const QuestsPage = () => {
 
         const data = await response.json();
         console.log(data);
-        setQuests(data); // Update quests state with API data
+        setQuests(data); 
       } catch (err) {
         console.error(err);
-        setError(err.message); // Set error message if fetch fails
+        setError(err.message); 
       } finally {
-        setLoading(false); // Stop loading once fetch is done
+        setLoading(false);
       }
     };
 
     fetchQuests();
-  }, []); // Empty array ensures the fetch runs only once on component mount
+  }, []); 
 
   const pieData = quests.map((quest, index) => ({
     name: quest.title,
@@ -96,7 +96,7 @@ const QuestsPage = () => {
       >
         <h1 style={{ textAlign: 'center', marginBottom: '2rem' }}>{username}'s Quests</h1>
 
-        {/* Pie Chart for Quest Completion */}
+        {}
         <div style={{ marginBottom: '2rem', borderRadius: '8px', padding: '20px', background: '#2c2c2c', boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
           <h2>{username}'s Quest Completion Overview</h2>
           <ResponsiveContainer width="100%" height={300}>
@@ -120,7 +120,7 @@ const QuestsPage = () => {
           </ResponsiveContainer>
         </div>
 
-        {/* Bar Chart for Quest Progress */}
+        {}
         <div style={{ marginBottom: '2rem', borderRadius: '8px', padding: '20px', background: '#2c2c2c', boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
           <h2>{username}'s Quest Progress and Time Spent</h2>
           <ResponsiveContainer width="100%" height={300}>
@@ -136,7 +136,7 @@ const QuestsPage = () => {
           </ResponsiveContainer>
         </div>
 
-        {/* Table for Detailed Quest Information */}
+        {}
         <div style={{ borderRadius: '8px', padding: '20px', background: '#2c2c2c', boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
           <h2>{username}'s Quest Details</h2>
           <Table striped bordered hover variant="dark">
@@ -170,7 +170,7 @@ const QuestsPage = () => {
         </div>
       </motion.div>
 
-      {/* Optional: Adding a moving bubble background */}
+      {}
       <div style={{
         position: 'absolute',
         top: 0,
