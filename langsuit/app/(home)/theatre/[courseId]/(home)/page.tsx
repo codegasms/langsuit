@@ -14,21 +14,51 @@ const DEFAULT_PLAYLIST = [
 ];
 
 const Page = () => {
-    // const [courseId,setCourseId] = useState();
     const [playlist, setPlaylist] = useState(DEFAULT_PLAYLIST);
     const [videoData, setVideoData] = useState();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [hasAccess, setHasAccess] = useState(false); // State for access check
     
     const { courseId } = useParams();
 
     useEffect(() => {
+        const fetchUserId = async () => {
+            try {
+                // Fetch userId from /api/user/id
+                const userIdResponse = await fetch('/api/user/id');
+                if (!userIdResponse.ok) {
+                    throw new Error('Failed to fetch user ID');
+                }
+                const { userId } = await userIdResponse.json();
+                
+                // Now check if the user has purchased the course
+                const accessResponse = await fetch('/api/ticket/hasPurchased', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ userId, courseId }),
+                });
+                
+                if (!accessResponse.ok) {
+                    throw new Error('Failed to check course purchase status');
+                }
+
+                const accessData = await accessResponse.json();
+                setHasAccess(accessData.hasPurchased);
+            } catch (err) {
+                setError(err.message);
+                console.error('Error fetching user access:', err);
+            }
+        };
+
         const fetchVideos = async () => {
             try {
                 setLoading(true);
                 const playlistResponse = await fetch('/api/courses/playlist', {
                     method: "POST",
-                    body: JSON.stringify({courseId})
+                    body: JSON.stringify({ courseId }),
                 });
                 
                 if (!playlistResponse.ok) {
@@ -42,7 +72,7 @@ const Page = () => {
                 const initialVideoData = {
                     id: firstVideo.id,
                     videoUrl: firstVideo.videoUrl,
-                    title: firstVideo.title
+                    title: firstVideo.title,
                 };
                 
                 // Update both states in one go
@@ -55,9 +85,11 @@ const Page = () => {
                 setLoading(false);
             }
         };
-    
-        if(courseId)
-            fetchVideos();
+
+        if (courseId) {
+            fetchUserId(); // Fetch user ID and access
+            fetchVideos(); // Fetch videos for the playlist
+        }
     }, [courseId]);
 
     if (loading) {
@@ -75,25 +107,32 @@ const Page = () => {
                     Error loading video: {error}
                 </div>
             )}
-            <Player
-                playlist={playlist} // Pass the playlist fetched from the API
-                isAuthenticated={true}
-                hasAccess={true}
-                onProgressUpdate={(progress) => {
-                    console.log('Progress:', progress);
-                    fetch('/api/progress/update', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        videoId: playlist[currentVideoIndex]?.id,
-                        progress: progress.percentage,
-                        currentTime: progress.currentTime,
-                    }),
-                    });
-                }}
-            />
+
+            {hasAccess ? (
+                <Player
+                    playlist={playlist} // Pass the playlist fetched from the API
+                    isAuthenticated={true}
+                    hasAccess={true}
+                    onProgressUpdate={(progress) => {
+                        console.log('Progress:', progress);
+                        fetch('/api/progress/update', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                videoId: playlist[currentVideoIndex]?.id,
+                                progress: progress.percentage,
+                                currentTime: progress.currentTime,
+                            }),
+                        });
+                    }}
+                />
+            ) : (
+                <div className="p-4 mb-4 text-red-500 bg-red-100 rounded">
+                    You do not have access to this course.
+                </div>
+            )}
         </div>
     );
 };
