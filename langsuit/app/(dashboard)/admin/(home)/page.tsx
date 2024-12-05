@@ -1,101 +1,158 @@
-"use client"
+"use client";
 
-import { BarChart2, ShoppingBag, Users, Zap } from "lucide-react";
 import { motion } from "framer-motion";
-
+import { useState } from "react";
 
 import StatCard from "../_components/StatCard";
 import Header from "../_components/Header";
 import SalesOverviewChart from "./_components/SalesOverviewChart";
 import CategoryDistributionChart from "./_components/CategoryDistributionChart";
 import SalesChannelChart from "./_components/SalesChannelChart";
-import { useEffect, useState } from "react";
-
-interface StatCardData {
-    totalSales: number;
-    newUsers: number;
-    totalCourses: number;
-    conversionRate: number;
-}
 
 const OverviewPage = () => {
-    const [statCardData, setStatCardData] = useState<StatCardData | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    
-    useEffect(() => {
-        const fetchStatCardData = () => {
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', '/api/dashboard/admin/overview/statcard', true);
-            
-            xhr.onload = function() {
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    const data = JSON.parse(xhr.responseText);
-                    setIsLoading(false);
-                    console.log(data);
-                    setStatCardData(data);
-                } else {
-                    console.error('Failed to fetch stat card data');
-                }
-            };
-            
-            xhr.onerror = function() {
-                console.error('Error fetching stat card data:', xhr.statusText);
-            };
-            
-            xhr.send();
-        };
-    
-        fetchStatCardData();
-    }, []);
-	
-    if(isLoading) return <div>Loading ..</div>
-	return (
-		<div className='flex-1 overflow-auto relative z-10'>
-			<Header title='Overview' />
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [courseName, setCourseName] = useState("");
+    const [courseCategory, setCourseCategory] = useState("");
+    const [coursePrice, setCoursePrice] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
-			<main className='max-w-7xl mx-auto py-6 px-4 lg:px-8'>
+    const handleAddCourse = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
 
-				<motion.div
-					className='grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8'
-					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 1 }}
-				>
-					<StatCard 
-                        name='Total Sales' 
-                        icon={Zap} 
-                        value={statCardData ? `$${statCardData.totalSales.toLocaleString()}` : 'Loading...'} 
-                        color='#6366F1' 
-                    />
-                    <StatCard 
-                        name='New Users' 
-                        icon={Users} 
-                        value={statCardData ? statCardData.newUsers.toLocaleString() : 'Loading...'} 
-                        color='#8B5CF6' 
-                    />
-                    <StatCard 
-                        name='Total Courses' 
-                        icon={ShoppingBag} 
-                        value={statCardData ? statCardData.totalCourses.toLocaleString() : 'Loading...'} 
-                        color='#EC4899' 
-                    />
-                    <StatCard 
-                        name='Conversion Rate' 
-                        icon={BarChart2} 
-                        value={statCardData ? `${statCardData.conversionRate}%` : 'Loading...'} 
-                        color='#10B981' 
-                    />
-				</motion.div>
+        try {
+            const response = await fetch("/api/courses/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    title: courseName,
+                    category: courseCategory,
+                    price: parseFloat(coursePrice),
+                }),
+            });
 
-				 <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
-					<SalesOverviewChart />
-					<CategoryDistributionChart />
-					<SalesChannelChart />
-				</div> 
-			</main>
-		</div>
-	);
+            if (response.ok) {
+                alert("Course added successfully!");
+                setCourseName("");
+                setCourseCategory("");
+                setCoursePrice("");
+                setIsModalOpen(false);
+            } else {
+                alert("Failed to add course.");
+            }
+        } catch (error) {
+            console.error("Error adding course:", error);
+            alert("An error occurred while adding the course.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div className="flex-1 overflow-auto relative z-10">
+            <Header title="Overview" />
+
+            <main className="max-w-7xl mx-auto py-6 px-4 lg:px-8">
+                <motion.div
+                    className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1 }}
+                >
+                    <StatCard name="Total Sales" icon={"Zap"} value={"$5000"} color="#6366F1" />
+                    <StatCard name="New Users" icon={"Users"} value={"120"} color="#8B5CF6" />
+                    <StatCard name="Total Courses" icon={"ShoppingBag"} value={"25"} color="#EC4899" />
+                    <StatCard name="Conversion Rate" icon={"BarChart2"} value={"15%"} color="#10B981" />
+                </motion.div>
+
+                <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                >
+                    Add New Course
+                </button>
+
+                {isModalOpen && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                        <div className="bg-white text-black rounded-lg p-6 w-full max-w-md">
+                            <h2 className="text-lg font-semibold mb-4">Add New Course</h2>
+                            <form onSubmit={handleAddCourse}>
+                                <div className="mb-4">
+                                    <label className="block text-sm font-medium mb-1" htmlFor="courseName">
+                                        Course Name
+                                    </label>
+                                    <input
+                                        id="courseName"
+                                        type="text"
+                                        value={courseName}
+                                        onChange={(e) => setCourseName(e.target.value)}
+                                        className="w-full px-3 py-2 border rounded-md text-black bg-gray-100"
+                                        required
+                                    />
+                                </div>
+
+                                <div className="mb-4">
+                                    <label className="block text-sm font-medium mb-1" htmlFor="courseCategory">
+                                        Course Category
+                                    </label>
+                                    <input
+                                        id="courseCategory"
+                                        type="text"
+                                        value={courseCategory}
+                                        onChange={(e) => setCourseCategory(e.target.value)}
+                                        className="w-full px-3 py-2 border rounded-md text-black bg-gray-100"
+                                        required
+                                    />
+                                </div>
+
+                                <div className="mb-4">
+                                    <label className="block text-sm font-medium mb-1" htmlFor="coursePrice">
+                                        Course Price ($)
+                                    </label>
+                                    <input
+                                        id="coursePrice"
+                                        type="number"
+                                        value={coursePrice}
+                                        onChange={(e) => setCoursePrice(e.target.value)}
+                                        className="w-full px-3 py-2 border rounded-md text-black bg-gray-100"
+                                        required
+                                    />
+                                </div>
+
+                                <div className="flex justify-end space-x-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsModalOpen(false)}
+                                        className="px-4 py-2 rounded-md bg-gray-200 text-black"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className={`px-4 py-2 rounded-md text-white ${
+                                            isLoading ? "bg-gray-400" : "bg-green-500"
+                                        }`}
+                                        disabled={isLoading}
+                                    >
+                                        {isLoading ? "Adding..." : "Add Course"}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
+
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+                    <SalesOverviewChart />
+                    <CategoryDistributionChart />
+                    <SalesChannelChart />
+                </div>
+            </main>
+        </div>
+    );
 };
-
 
 export default OverviewPage;

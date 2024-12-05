@@ -48,8 +48,6 @@ const Page = () => {
                 // Update both states in one go
                 setVideoData(initialVideoData);
                 setPlaylist(playlistData);
-                console.log(videoData);
-                console.log(playlist);
             } catch (err) {
                 setError(err.message);
                 console.error('Error fetching videos:', err);
@@ -77,24 +75,22 @@ const Page = () => {
                     Error loading video: {error}
                 </div>
             )}
-            <Player 
-                videoUrl={videoData?.videoUrl}
-                title={videoData?.title || "Course Video"}
+            <Player
+                playlist={playlist} // Pass the playlist fetched from the API
                 isAuthenticated={true}
                 hasAccess={true}
-                playlist={playlist}
                 onProgressUpdate={(progress) => {
                     console.log('Progress:', progress);
                     fetch('/api/progress/update', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            videoId: videoData?.id,
-                            progress: progress.percentage,
-                            currentTime: progress.currentTime
-                        })
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        videoId: playlist[currentVideoIndex]?.id,
+                        progress: progress.percentage,
+                        currentTime: progress.currentTime,
+                    }),
                     });
                 }}
             />

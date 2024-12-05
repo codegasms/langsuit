@@ -177,7 +177,7 @@ const SeatGrid = ({
   }
   
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-gray-900 rounded-xl shadow-2xl">
+    <div className="!max-w-full mx-auto p-6 bg-gray-900 rounded-xl shadow-2xl">
       <div className="text-center mb-8">
         <h2 className="text-2xl font-bold text-amber-500 mb-2">Select Your Seat</h2>
         <div className="text-gray-400">
