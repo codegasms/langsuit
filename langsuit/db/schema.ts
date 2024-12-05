@@ -50,7 +50,7 @@ export const instructorRelation = relations(instructor, ({ one, many }) => ({
 export const courses = pgTable("courses", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
-  imageSrc: text("image_src").notNull(),
+  imageSrc: text("image_src"),
   instructorId: integer("instructor_id").notNull(),
   category: text("category").notNull(),
   price: integer("price").default(0),
@@ -209,8 +209,7 @@ export const naive = pgTable("naive", {
 });
 
 export const followList = pgTable(
-  "follow_list",
-  {
+  "follow_list",{
     userId: integer("user_id")
       .notNull()
       .references(() => users.id),
@@ -264,7 +263,7 @@ export const tickets = pgTable("tickets", {
   id: serial("id").primaryKey(), // Auto-incrementing primary key
   courseId: integer("course_id")
     .notNull()
-    .references(() => courses.id), // Foreign key to the courses table
+    .references(() => courses.id, { onDelete: 'cascade' }), // Foreign key to the courses table
   userId: text("user_id"), // Optional: Foreign key to the users table
   row: text("row").notNull(), // Row (A, B, C, etc.)
   column: integer("column").notNull(), // Column (1, 2, 3, etc.)
