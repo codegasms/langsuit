@@ -63,6 +63,27 @@ const main = async () => {
         description: "Advanced Spanish",
         order: 3,
       },
+      {
+        id: 4,
+        courseId: 2, // For Hindi
+        title: "Unit 1",
+        description: "Learn the Basics of Hindi",
+        order: 1,
+      },
+      {
+        id: 5,
+        courseId: 2, // For Hindi
+        title: "Unit 2",
+        description: "A Little Bit Advanced",
+        order: 2,
+      },
+      {
+        id: 6,
+        courseId: 2, // For Hindi
+        title: "Unit 3",
+        description: "Advanced Hindi",
+        order: 3,
+      },
     ]);
 
     await db.insert(schema.lessons).values([
@@ -135,6 +156,76 @@ const main = async () => {
       },
     ]);
 
+    await db.insert(schema.lessons).values([
+      {
+        id: 16,
+        unitId: 4, // For Spanish Unit 1 = Learn the Basics of Spanish
+        order: 1,
+        title: "Nouns",
+      },
+      {
+        id: 17,
+        unitId: 4, // For Spanish Unit 1 = Learn the Basics of Spanish
+        order: 2,
+        title: "Pronouns",
+      },
+      {
+        id: 18,
+        unitId: 4, // For Spanish Unit 1 = Learn the Basics of Spanish
+        order: 3,
+        title: "Verbs",
+      },
+      {
+        id: 19,
+        unitId: 4, // For Spanish Unit 1 = Learn the Basics of Spanish
+        order: 4,
+        title: "Adjectives",
+      },
+      {
+        id: 20,
+        unitId: 4, // For Spanish Unit 1 = Learn the Basics of Spanish
+        order: 5,
+        title: "Grammar",
+      },
+
+      {
+        id: 21,
+        unitId: 4, // For Spanish Unit 1 = Learn the Basics of Spanish
+        order: 6,
+        title: "Verbs",
+      },
+      {
+        id: 22,
+        unitId: 5, // For Spanish Unit 2 = A Little Bit Advanced
+        order: 1,
+        title: "Advanced Nouns",
+      },
+      {
+        id: 23,
+        unitId: 5, // For Spanish Unit 2 = A Little Bit Advanced
+        order: 2,
+        title: "Advanced Pronouns",
+      },
+      {
+        id: 24,
+        unitId: 5, // For Spanish Unit 2 = A Little Bit Advanced
+        order: 3,
+        title: "Advanced Verbs",
+      },
+      {
+        id: 25,
+        unitId: 6, // For Spanish Unit 3 = Advanced Spanish
+        order: 1,
+        title: "Expert Nouns",
+      },
+      {
+        id: 26,
+        unitId: 6, // For Spanish Unit 3 = Advanced Spanish
+        order: 2,
+        title: "Expert Pronouns",
+      },
+    ]);
+
     await db.insert(schema.challenges).values([
       {
         id: 1,
@@ -160,6 +251,44 @@ const main = async () => {
       {
         id: 4,
         lessonId: 2, // For Pronouns : Spanish Unit 1 = Learn the Basics of Spanish
+        type: "ASSIST",
+        order: 2,
+        question: '"they"',
+      },
+      {
+        id: 5,
+        lessonId: 1, // For Pronouns : Spanish Unit 1 = Learn the Basics of Spanish
+        type: "ASSIST",
+        order: 3,
+        question: '"boy"',
+      },
+    ]);
+
+    await db.insert(schema.challenges).values([
+      {
+        id: 6,
+        lessonId: 16, // For Nouns : Spanish Unit 1 = Learn the Basics of Spanish
+        type: "SELECT",
+        order: 1,
+        question: 'Which one of these is "the man"?',
+      },
+      {
+        id: 7,
+        lessonId: 16, // For Nouns : Spanish Unit 1 = Learn the Basics of Spanish
+        type: "SELECT",
+        order: 2,
+        question: 'Which one of these is "the woman"?',
+      },
+      {
+        id: 8,
+        lessonId: 17, // For Pronouns : Spanish Unit 1 = Learn the Basics of Spanish
+        type: "SELECT",
+        order: 1,
+        question: 'Which one of these is "he"?',
+      },
+      {
+        id: 9,
+        lessonId: 17, // For Pronouns : Spanish Unit 1 = Learn the Basics of Spanish
         type: "ASSIST",
         order: 2,
         question: '"they"',
@@ -262,6 +391,129 @@ const main = async () => {
         correct: true,
         imageSrc: "/they.png",
         audioSrc: "/es_they.mp3",
+      },
+      {
+        id: 13,
+        challengeId: 5, // For 'Which one of these is "they"?' : Pronouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "él chico",
+        correct: true,
+        imageSrc: "/he.png",
+        audioSrc: "/es_he.mp3",
+      },
+      {
+        id: 14,
+        challengeId: 5, // For 'Which one of these is "they"?' : Pronouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "el hombre",
+        correct: false,
+        imageSrc: "/man.png",
+        audioSrc: "/es_man.mp3",
+      },
+      {
+        id: 15,
+        challengeId: 5, // For 'Which one of these is "they"?' : Pronouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "el zombie",
+        correct: false,
+        imageSrc: "/zombie.png",
+        audioSrc: "/es_zombie.mp3",
+      },
+    ]);
+
+    await db.insert(schema.challengeOptions).values([
+      {
+        id: 16,
+        challengeId: 6, // For 'Which one of these is "the man"?' : Nouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "आदमी",
+        correct: true,
+        imageSrc: "/man.svg",
+        audioSrc: "/hi_man.mp3",
+      },
+      {
+        id: 17,
+        challengeId: 6, // For 'Which one of these is "the man"?' : Nouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "महिला",
+        correct: false,
+        imageSrc: "/woman.svg",
+        audioSrc: "/hi_woman.mp3",
+      },
+      {
+        id: 18,
+        challengeId: 6, // For 'Which one of these is "the man"?' : Nouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "रोबोट",
+        correct: false,
+        imageSrc: "/robot.svg",
+        audioSrc: "/hi_robot.mp3",
+      },
+      {
+        id: 19,
+        challengeId: 7, // For 'Which one of these is "the woman"?' : Nouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "महिला",
+        correct: true,
+        imageSrc: "/woman.svg",
+        audioSrc: "/hi_woman.mp3",
+      },
+      {
+        id: 20,
+        challengeId: 7, // For 'Which one of these is "the woman"?' : Nouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "रोबोट",
+        correct: false,
+        imageSrc: "/robot.svg",
+        audioSrc: "/hi_robot.mp3",
+      },
+      {
+        id: 21,
+        challengeId: 7, // For 'Which one of these is "the woman"?' : Nouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "आदमी",
+        correct: false,
+        imageSrc: "/man.svg",
+        audioSrc: "/hi_man.mp3",
+      },
+      {
+        id: 22,
+        challengeId: 8, // For 'Which one of these is "he"?' : Pronouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "वह आदमी",
+        correct: true,
+        imageSrc: "/he.png",
+        audioSrc: "/hi_he.mp3",
+      },
+      {
+        id: 23,
+        challengeId: 8, // For 'Which one of these is "he"?' : Pronouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "वह महिला",
+        correct: false,
+        imageSrc: "/she.png",
+        audioSrc: "/hi_she.mp3",
+      },
+      {
+        id: 24,
+        challengeId: 8, // For 'Which one of these is "he"?' : Pronouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "वे",
+        correct: false,
+        imageSrc: "/they.png",
+        audioSrc: "/hi_they.mp3",
+      },
+      {
+        id: 25,
+        challengeId: 9, // For 'Which one of these is "they"?' : Pronouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "वह आदमी",
+        correct: false,
+        imageSrc: "/he.png",
+        audioSrc: "/hi_he.mp3",
+      },
+      {
+        id: 26,
+        challengeId: 9, // For 'Which one of these is "they"?' : Pronouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "वह महिला",
+        correct: false,
+        imageSrc: "/she.png",
+        audioSrc: "/hi_she.mp3",
+      },
+      {
+        id: 27,
+        challengeId: 9, // For 'Which one of these is "they"?' : Pronouns : Spanish Unit 1 = Learn the Basics of Spanish
+        text: "वे",
+        correct: true,
+        imageSrc: "/they.png",
+        audioSrc: "/hi_they.mp3",
       },
     ]);
 
