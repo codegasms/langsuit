@@ -8,6 +8,7 @@ import {
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
 import "./globals.css";
+import { ReduxProvider } from '../redux/provider';
 
 const font = Nunito({ subsets: ["latin"] });
 
@@ -29,7 +30,9 @@ export default function RootLayout({
           <ExitModal />
           <HeartsModal />
           <PracticeModal />
-          {children}
+          <ReduxProvider >
+            {children}
+          </ReduxProvider>
         </body>
       </html>
     </ClerkProvider>
