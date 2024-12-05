@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSearchQuery } from '@/redux/searchSlice';
 
 // Course interface for type safety
 interface Course {
@@ -19,6 +21,8 @@ const CourseSelectionPage: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const searchQuery = useSelector((state: { search: { query: string } }) => state.search.query); // Accessing search query from Redux store
+  const dispatch = useDispatch();
   const router = useRouter();
 
   useEffect(() => {
@@ -50,6 +54,16 @@ const CourseSelectionPage: React.FC = () => {
     router.push(`/tickets/${courseId}`);
   };
 
+  // Filter courses based on the search query
+  const filteredCourses = courses.filter(course => 
+    course.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    course.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setSearchQuery(event.target.value));
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -72,14 +86,24 @@ const CourseSelectionPage: React.FC = () => {
         Available Courses
       </h1>
 
+      <div className="mb-6 flex justify-center">
+        <input
+          type="text"
+          placeholder="Search courses..."
+          value={searchQuery}
+          onChange={handleSearchChange}
+          className="p-2 rounded-lg border border-gray-300"
+        />
+      </div>
+
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {courses.map((course) => (
+        {filteredCourses.map((course) => (
           <Card 
             key={course.id} 
             className="bg-gray-900 p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300"
           >
             <div className="mb-4">
-              <h2 className="text-xl font-semibold text-white mb-2">{course.name}</h2>
+              <h2 className="text-xl font-semibold text-white mb-2">{course.title}</h2>
               <p className="text-gray-400 mb-4">{course.description}</p>
             </div>
 
@@ -107,7 +131,8 @@ const CourseSelectionPage: React.FC = () => {
         ))}
       </div>
 
-      {courses.length === 0 && (
+
+      {filteredCourses.length === 0 && (
         <div className="text-center text-gray-500">
           No courses are currently available.
         </div>
