@@ -1,25 +1,21 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { Play, BookOpen, Clock, ChevronRight } from 'lucide-react';
-import { cn } from "@/lib/utils";
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
-  CardTitle 
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogDescription 
-} from "@/components/ui/dialog";
+import { RootState, AppDispatch } from '@/redux/store';
+import { setSearchQuery } from '@/redux/filterSlice';
 
-// Type definition for a Course
+import { cn } from '@/lib/utils';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+
 interface Course {
   id: string;
   title: string;
@@ -35,30 +31,25 @@ export default function TheaterPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+
+  const searchQuery = useSelector((state: RootState) => state.courseFilter.searchQuery);
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         const response = await fetch('/api/courses/available');
-
-        // Log the raw response for debugging
         const rawData = await response.json();
-        console.log('Raw response:', rawData);
 
-        // Ensure data is an array
-        const coursesData = Array.isArray(rawData) 
-          ? rawData 
-          : rawData.courses 
-            ? rawData.courses 
-            : [];
+        const coursesData = Array.isArray(rawData)
+          ? rawData
+          : rawData.courses
+          ? rawData.courses
+          : [];
 
-        // Validate course data structure
-        const validCourses = coursesData.filter(course => 
-          course && 
-          typeof course.id === 'string' && 
-          typeof course.title === 'string'
+        const validCourses = coursesData.filter(
+          (course) => course && typeof course.id === 'string' && typeof course.title === 'string'
         );
 
         if (validCourses.length === 0) {
@@ -81,9 +72,9 @@ export default function TheaterPage() {
     router.push(`/theatre/${course.id}`);
   };
 
-  const handlePreviewClose = () => {
-    setSelectedCourse(null);
-  };
+  const filteredCourses = courses.filter((course) =>
+    course.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   if (loading) {
     return (
@@ -104,12 +95,12 @@ export default function TheaterPage() {
     );
   }
 
-  if (courses.length === 0) {
+  if (filteredCourses.length === 0) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-900 text-white">
         <div className="text-center">
-          <h2 className="text-2xl mb-4">No Courses Available</h2>
-          <p>Please check back later or contact support.</p>
+          <h2 className="text-2xl mb-4">No Courses Found</h2>
+          <p>Try adjusting your search query.</p>
         </div>
       </div>
     );
@@ -122,16 +113,24 @@ export default function TheaterPage() {
           Available Courses
         </h1>
 
+        <div className="mb-6">
+          <input
+            type="text"
+            placeholder="Search courses by title"
+            value={searchQuery}
+            onChange={(e) => dispatch(setSearchQuery(e.target.value))}
+            className="w-full p-3 rounded border border-gray-300"
+          />
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {courses.map((course) => (
-            <Card 
-              key={course.id} 
+          {filteredCourses.map((course) => (
+            <Card
+              key={course.id}
               className="bg-gray-900 border-gray-800 hover:border-blue-600 transition-all duration-300"
             >
               <CardHeader className="p-4">
-                <CardTitle className="text-xl text-white">
-                  {course.title}
-                </CardTitle>
+                <CardTitle className="text-xl text-white">{course.title}</CardTitle>
               </CardHeader>
               <CardContent className="p-4">
                 <div className="space-y-4">
@@ -145,20 +144,17 @@ export default function TheaterPage() {
                     {course.description || 'No description available'}
                   </p>
                   <div className="flex items-center justify-between">
-                    <span 
+                    <span
                       className={cn(
-                        "px-3 py-1 rounded-full text-sm",
-                        course.level === 'Beginner' && "bg-green-900 text-green-300",
-                        course.level === 'Intermediate' && "bg-yellow-900 text-yellow-300",
-                        course.level === 'Advanced' && "bg-red-900 text-red-300"
+                        'px-3 py-1 rounded-full text-sm',
+                        course.level === 'Beginner' && 'bg-green-900 text-green-300',
+                        course.level === 'Intermediate' && 'bg-yellow-900 text-yellow-300',
+                        course.level === 'Advanced' && 'bg-red-900 text-red-300'
                       )}
                     >
                       {course.level || 'Unknown'}
                     </span>
-                    <Button 
-                      onClick={() => handleCourseSelect(course)}
-                      className="group"
-                    >
+                    <Button onClick={() => handleCourseSelect(course)} className="group">
                       Start Course
                       <ChevronRight className="ml-2 group-hover:translate-x-1 transition-transform" />
                     </Button>
