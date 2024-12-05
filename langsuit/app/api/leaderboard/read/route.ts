@@ -1,6 +1,6 @@
 // import { authMiddleware } from '@clerk/nextjs';
 import db from '@/db/drizzle';
-import {  users } from '@/db/schema';
+import { leaderboard, users } from '@/db/schema';
 import { eq, desc } from 'drizzle-orm/expressions';
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth } from 'date-fns';
 import { NextResponse,NextRequest } from 'next/server';
@@ -72,20 +72,29 @@ const formatLeaderboardData = (data: any[]) => {
 // });
 
 
-export const GET =(req:NextRequest)=>{
+export const GET =async(req:NextRequest)=>{
   try {
     const url  = new URL(req.url);
     const user_id = url.searchParams.get('user_id');
-    
-     return NextResponse.json({
-      status:true
-     })
+    if(!user_id){
+      return NextResponse.json({
+        status:false,
+        message:"No User Id is found"
+      })
+    }
+
+    const leaderboardData = await db.select().from (leaderboard).where(eq(leaderboard.userId, Number(user_id)));
+    return NextResponse.json({
+      status:true,
+      data:leaderboardData
+    })
     
   } catch (error) {
+    console.error(error);
+
     return NextResponse.json({
       status:false
      })
-    console.log(error);
 
     
   }

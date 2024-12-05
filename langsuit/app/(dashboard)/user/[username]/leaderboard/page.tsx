@@ -6,7 +6,10 @@ import React, { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { motion } from 'framer-motion';
 
-
+type BackendData={
+    weekly:any[],
+    monthly:any[]
+}
 const dummyLeaderboardData = {
     weekly: [
         { day: 'Mon', points: 30 },
@@ -53,7 +56,8 @@ const dummyChartData = {
 };
 
 const LeaderboardPage = () => {
-    const [leaderboardData, setLeaderboardData] = useState(dummyLeaderboardData.weekly);
+    const [leaderboardData, setLeaderboardData] = useState();
+    const [backendData,SetBackendData]=useState()
     const [chartData, setChartData] = useState(dummyChartData.weekly);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -66,17 +70,39 @@ const LeaderboardPage = () => {
 
             try {
                 const response = await fetch(`http://localhost:3000/api/leaderboard/read?user_id=1`); 
-                console.log(response);// Replace with dynamic user ID if necessary
 
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
 
-                const data = await response.json();
-                if (data && data.length > 0) {
+                let data = await response.json();
+                
+                if (data.data && data.data.length > 0) {
+                    const weekly =[];
+                    const monthly=[];
+                    data.data.forEach((rec:any)=>{
+                        if(rec.type==='weekly'){
+                         weekly.push({
+                            day:rec.period,
+                            points:rec.points
+                        })
+
+                    }else{
+                        monthly.push({
+                            month:rec.period,
+                            points:rec.points
+                        })
+                    }
+
+                })
+                const backendData:BackendData={
+                    weekly:weekly,
+                    monthly:monthly
+                }
                     // Assuming data contains leaderboard info
-                    setLeaderboardData(data);
-                    setChartData(dummyChartData.weekly); // Update chart data based on fetched data if necessary
+                    SetBackendData(backendData)
+                    setLeaderboardData(backendData.weekly);
+                    setChartData(backendData.weekly); // Update chart data based on fetched data if necessary
                 } else {
                     // Fall back to dummy data if no data is returned
                     setLeaderboardData(dummyLeaderboardData.weekly);
@@ -98,7 +124,7 @@ const LeaderboardPage = () => {
     const handleTimeframeChange = (event) => {
         const selectedTimeframe = event.target.value;
         setTimeframe(selectedTimeframe);
-        setLeaderboardData(dummyLeaderboardData[selectedTimeframe]);
+        setLeaderboardData(backendData[selectedTimeframe]);
         setChartData(dummyChartData[selectedTimeframe]);
     };
 
@@ -154,16 +180,13 @@ const LeaderboardPage = () => {
             
             {/* Button to switch between weekly and monthly */}
             <div style={{ marginBottom: '20px' }}>
-                <select onChange={handleTimeframeChange} value={timeframe} style={{ marginRight: '10px', padding: '8px', borderRadius: '5px' }}>
-                    <option value="weekly">Weekly</option>
-                    <option value="monthly">Monthly</option>
-                </select>
+                
                 <motion.button 
     onClick={() => {
         const newTimeframe = timeframe === 'weekly' ? 'monthly' : 'weekly';
         setTimeframe(newTimeframe);
-        setLeaderboardData(dummyLeaderboardData[newTimeframe]);
-        setChartData(dummyChartData[newTimeframe]);
+        setLeaderboardData(backendData[newTimeframe]);
+        setChartData(backendData[newTimeframe]);
     }}
     initial={{ scale: 0.9, opacity: 0 }} 
     animate={{ scale: 1, opacity: 1 }} 

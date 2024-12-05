@@ -22,7 +22,7 @@ const dummyQuests = [
     id: 2,
     title: "Master Mandarin",
     progress: 50,
-    description: "Learn advanced concepts in Mandarin.",
+    description: "DO 5advanced concepts in Mandarin.",
     rewardPoints: 150,
     difficulty: "Hard",
     timeSpent: 15,
@@ -31,9 +31,9 @@ const dummyQuests = [
   },
   {
     id: 3,
-    title: "Intro to French",
+    title: "Complete one beginner path",
     progress: 100,
-    description: "Complete the French introduction course.",
+    description: "Complete one beginner course.",
     rewardPoints: 200,
     difficulty: "Medium",
     timeSpent: 10,
@@ -55,14 +55,13 @@ const QuestsPage = () => {
     const fetchQuests = async () => {
       try {
         setLoading(true); 
-        const response = await fetch(`http://localhost:3000/api/quests/read?username=${username}`);
+        const response = await fetch(`http://localhost:3000/api/quests/read?user_id=1`);
 
         if (!response.ok) {
           throw new Error('Failed to fetch quests');
         }
 
         const data = await response.json();
-        console.log(data);
         setQuests(data); 
       } catch (err) {
         console.error(err);
@@ -94,11 +93,11 @@ const QuestsPage = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
       >
-        <h1 style={{ textAlign: 'center', marginBottom: '2rem' }}>{username}'s Quests</h1>
+        <h1 style={{ textAlign: 'center', marginBottom: '2rem' }}>Quests</h1>
 
         {}
         <div style={{ marginBottom: '2rem', borderRadius: '8px', padding: '20px', background: '#2c2c2c', boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
-          <h2>{username}'s Quest Completion Overview</h2>
+          <h2>Quest Completion Overview</h2>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -122,7 +121,7 @@ const QuestsPage = () => {
 
         {}
         <div style={{ marginBottom: '2rem', borderRadius: '8px', padding: '20px', background: '#2c2c2c', boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
-          <h2>{username}'s Quest Progress and Time Spent</h2>
+          <h2>Quest Progress</h2>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={barData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -131,7 +130,6 @@ const QuestsPage = () => {
               <Tooltip />
               <Legend />
               <Bar dataKey="progress" fill="#8884d8" name="Progress (%)" />
-              <Bar dataKey="timeSpent" fill="#82ca9d" name="Time Spent (hrs)" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -146,10 +144,6 @@ const QuestsPage = () => {
                 <th>Description</th>
                 <th>Progress (%)</th>
                 <th>Reward Points</th>
-                <th>Difficulty</th>
-                <th>Time Spent (hrs)</th>
-                <th>Expires At</th>
-                <th>Status</th>
               </tr>
             </thead>
             <tbody>
@@ -159,10 +153,7 @@ const QuestsPage = () => {
                   <td style={{ padding: '10px' }}>{quest.description}</td>
                   <td style={{ padding: '10px' }}>{quest.progress}%</td>
                   <td style={{ padding: '10px' }}>{quest.rewardPoints}</td>
-                  <td style={{ padding: '10px' }}>{quest.difficulty}</td>
-                  <td style={{ padding: '10px' }}>{quest.timeSpent}</td>
-                  <td style={{ padding: '10px' }}>{new Date(quest.expiresAt).toLocaleDateString()}</td>
-                  <td style={{ padding: '10px' }}>{quest.completed ? 'Completed' : 'In Progress'}</td>
+                  
                 </tr>
               ))}
             </tbody>

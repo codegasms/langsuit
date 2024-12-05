@@ -252,7 +252,16 @@ export const liveStream = pgTable("live_stream", {
   isChatDelayed: boolean("is_chat_delayed"),
   isChatFollowersOnly: boolean("is_chat_followers_only"),
 });
+export const leaderboard = pgTable("leaderboard",{
+  userId: integer("user_id")
+      .notNull()
+      .references(() => users.id),
+  type:text("type"),
+  period:text("period"),
+  points:integer("points")
 
+
+})
 export const liveStreamRelation = relations(liveStream, ({ one }) => ({
   instructor: one(instructor, {
     fields: [liveStream.instructorId],
@@ -306,3 +315,14 @@ export const userSubscription = pgTable("user_subscription", {
   stripePriceId: text("stripe_price_id").notNull(),
   stripeCurrentPeriodEnd: timestamp("stripe_current_period_end").notNull(),
 });
+
+export const userQuests = pgTable("userQuests",{
+  userId: integer("user_id")
+      .notNull()
+      .references(() => users.id),
+  id: integer("id").notNull(),
+  title:text("title"),
+  description:text("description"),
+  rewardPoints:integer("reward_points"),
+  progress:integer("progress")
+}

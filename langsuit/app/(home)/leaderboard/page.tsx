@@ -8,32 +8,62 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { Trophy, Medal, Award } from 'lucide-react';
 
 const getUserProgress = async () => {
-  return {
-    hearts: 30,
-    points: 1500,
-    hasActiveSubscription: true,
-    activeCourse: {
-      title: "Spanish",
-      imageSrc: "/ES - Spain.svg",
-    },
-    userName: "Akshat",
-    userImageSrc: "/avatar-placeholder.png",
-  };
+    return {
+      hearts: 30,
+      points: 1500,
+      hasActiveSubscription: true,
+      activeCourse: {
+        title: "Spanish",
+        imageSrc: "/ES - Spain.svg",
+      },
+      userName: "Akshat",
+      userImageSrc: "/avatar-placeholder.png",
+    };
+    
+  
+  
 };
 
 const getTopTenUsers = async () => {
-  return [
-    { userId: 1, userName: "Alice", points: 2000 },
-    { userId: 2, userName: "Bob", points: 1800 },
-    { userId: 3, userName: "Charlie", points: 1600 },
-    { userId: 4, userName: "Diana", points: 1400 },
-    { userId: 5, userName: "Eve", points: 1300 },
-    { userId: 6, userName: "Frank", points: 1200 },
-    { userId: 7, userName: "Grace", points: 1100 },
-    { userId: 8, userName: "Hank", points: 1000 },
-    { userId: 9, userName: "Ivy", points: 900 },
-    { userId: 10, userName: "Jack", points: 800 },
-  ];
+  try {
+    const response = await fetch(`http://localhost:3000/api/leaderboard`);
+    if(!response.ok){
+      return [
+        { userId: 1, userName: "Alice", points: 2000 },
+        { userId: 2, userName: "Bob", points: 1800 },
+        { userId: 3, userName: "Charlie", points: 1600 },
+        { userId: 4, userName: "Diana", points: 1400 },
+        { userId: 5, userName: "Eve", points: 1300 },
+        { userId: 6, userName: "Frank", points: 1200 },
+        { userId: 7, userName: "Grace", points: 1100 },
+        { userId: 8, userName: "Hank", points: 1000 },
+        { userId: 9, userName: "Ivy", points: 900 },
+        { userId: 10, userName: "Jack", points: 800 },
+      ];
+  
+    } 
+    const res_data = await response.json();
+    if(res_data && Array.isArray(res_data.data)){
+      return res_data.data;
+    }
+
+  
+  } catch (error) {
+    console.log(error);
+    return  [
+      { userId: 1, userName: "Alice", points: 2000 },
+      { userId: 2, userName: "Bob", points: 1800 },
+      { userId: 3, userName: "Charlie", points: 1600 },
+      { userId: 4, userName: "Diana", points: 1400 },
+      { userId: 5, userName: "Eve", points: 1300 },
+      { userId: 6, userName: "Frank", points: 1200 },
+      { userId: 7, userName: "Grace", points: 1100 },
+      { userId: 8, userName: "Hank", points: 1000 },
+      { userId: 9, userName: "Ivy", points: 900 },
+      { userId: 10, userName: "Jack", points: 800 },
+    ];
+    
+  }
 };
 
 const getRandomColor = () => {
