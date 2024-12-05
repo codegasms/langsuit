@@ -60,7 +60,7 @@ const ProgressPage = () => {
 
     return (
         <div style={{ color: '#f0f4fc', padding: '20px', background: '#1c1c1c', position: 'relative', overflow: 'hidden' }}>
-            {/* Background Animation with Moving Bubbles */}
+            {}
             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', overflow: 'hidden' }}>
                 {Array.from({ length: 30 }).map((_, index) => (
                     <motion.div
@@ -93,7 +93,7 @@ const ProgressPage = () => {
                 transition={{ duration: 0.5 }}
                 style={{ textAlign: 'center', fontSize: '2.5rem' }}
             >
-                {username}'s Progress Overview
+                Progress Overview
             </motion.h1>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>

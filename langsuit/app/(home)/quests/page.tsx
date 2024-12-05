@@ -16,7 +16,7 @@ const DUMMY_QUESTS = [
     difficulty: "Medium",
     expiresAt: "7 days",
     rewardPoints: 500,
-    completed: false
+    completed: true
   },
   {
     id: 2,
@@ -34,7 +34,7 @@ const DUMMY_QUESTS = [
     difficulty: "Easy",
     expiresAt: "10 days",
     rewardPoints: 300,
-    completed: true
+    completed: false
   },
   {
     id: 4,
@@ -43,7 +43,7 @@ const DUMMY_QUESTS = [
     difficulty: "Medium",
     expiresAt: "14 days",
     rewardPoints: 600,
-    completed: false
+    completed: true
   }
 ];
 
