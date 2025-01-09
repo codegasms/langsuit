@@ -19,11 +19,13 @@ import { UnitCreate } from "./unit/create";
 import { UnitEdit } from "./unit/edit";
 import { UnitList } from "./unit/list";
 
+import { theme } from "./theme";
+
 const dataProvider = simpleRestProvider("/api");
 
 const App = () => {
   return (
-    <Admin dataProvider={dataProvider}>
+    <Admin theme={theme} dataProvider={dataProvider}>
       <Resource
         name="courses"
         recordRepresentation="title"
