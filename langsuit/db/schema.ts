@@ -324,3 +324,16 @@ export const userQuests = pgTable("userQuests", {
   rewardPoints: integer("reward_points"),
   progress: integer("progress"),
 });
+
+
+
+export const languageProgress= pgTable("language_progress", {
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
+    username: text("username"),
+  languageId: integer("language_id")
+    .notNull(),
+    languageName: text("language_name"),
+  progress: integer("progress"),
+})

@@ -99,18 +99,18 @@ const LeaderboardPage = () => {
                     weekly:weekly,
                     monthly:monthly
                 }
-                    // Assuming data contains leaderboard info
+                    
                     SetBackendData(backendData)
                     setLeaderboardData(backendData.weekly);
-                    setChartData(backendData.weekly); // Update chart data based on fetched data if necessary
+                    setChartData(backendData.weekly); 
                 } else {
-                    // Fall back to dummy data if no data is returned
+                    
                     setLeaderboardData(dummyLeaderboardData.weekly);
                     setChartData(dummyChartData.weekly);
                 }
             } catch (err) {
                 setError(err.message);
-                // Fall back to dummy data in case of error
+                
                 setLeaderboardData(dummyLeaderboardData.weekly);
                 setChartData(dummyChartData.weekly);
             } finally {
@@ -128,12 +128,12 @@ const LeaderboardPage = () => {
         setChartData(dummyChartData[selectedTimeframe]);
     };
 
-    // Bubble component defined inline
+    
     const Bubble = ({ size, duration }) => {
         const bubbleStyle = {
             position: 'absolute',
             borderRadius: '50%',
-            background: `rgba(255, 255, 255, 0.3)`, // Light bubbles
+            background: `rgba(255, 255, 255, 0.3)`, 
             opacity: 0.5,
         };
 
@@ -147,7 +147,7 @@ const LeaderboardPage = () => {
                     left: Math.random() * 100 + '%',
                 }}
                 animate={{
-                    y: ['100vh', '-10vh'], // Animate from bottom to top
+                    y: ['100vh', '-10vh'], 
                     transition: {
                         duration: duration,
                         ease: 'linear',

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname, useParams } from 'next/navigation';
+import{useUser} from '@clerk/nextjs';
 import {
     Trophy,
     Globe,
@@ -60,28 +61,30 @@ class User {
 
 export const Navigation = () => {
     const pathname = usePathname();
-    const { username: paramUsername } =  useParams();
-    const [user, setUser] = useState(null); 
-    const [loading, setLoading] = useState(true); 
+    const { user } = useUser();
+    console.log(user?.username);
+    // const { username: paramUsername } =  useParams();
+    //const [user, setUser] = useState(null); 
+    const [loading, setLoading] = useState(false); 
     const { collapsed } = useInstructorSidebar((state) => state);
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const response = await axios.post('http://localhost:3000/api/user', {
-                    username: paramUsername,
-                    role: "instructor"
-                });
-                const {user} = response.data;
-                setUser(user);
-                setLoading(false);
-            } catch (error) {
-                console.error('Error fetching user:', error);
-                setLoading(false); 
-            }
-        };
+    // useEffect(() => {
+    //     const fetchUser = async () => {
+    //         try {
+    //             const response = await axios.post('http://localhost:3000/api/user', {
+    //                 username: paramUsername,
+    //                 role: "instructor"
+    //             });
+    //             const {user} = response.data;
+    //             setUser(user);
+    //             setLoading(false);
+    //         } catch (error) {
+    //             console.error('Error fetching user:', error);
+    //             setLoading(false); 
+    //         }
+    //     };
 
-        fetchUser();
-    }, [paramUsername]);
+    //     fetchUser();
+    // }, [paramUsername]);
 
     if (loading) {
         return <div>Loading...</div>;
