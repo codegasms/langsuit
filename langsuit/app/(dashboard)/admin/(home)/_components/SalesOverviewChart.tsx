@@ -1,22 +1,40 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { motion } from "framer-motion";
-
-const salesData = [
-	{ name: "Jul", sales: 4200 },
-	{ name: "Aug", sales: 3800 },
-	{ name: "Sep", sales: 5100 },
-	{ name: "Oct", sales: 4600 },
-	{ name: "Nov", sales: 5400 },
-	{ name: "Dec", sales: 7200 },
-	{ name: "Jan", sales: 6100 },
-	{ name: "Feb", sales: 5900 },
-	{ name: "Mar", sales: 6800 },
-	{ name: "Apr", sales: 6300 },
-	{ name: "May", sales: 7100 },
-	{ name: "Jun", sales: 7500 },
-];
+import { useState,useEffect } from 'react';
 
 const SalesOverviewChart = () => {
+
+	const [monthlyRevenue, setMonthlyRevenue] = useState<{ name: string; sales: number; }[]>([]);
+	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+
+useEffect(() => {
+   const fetchMonthlyRevenue = async () => {
+       setIsLoading(true);
+       setError(null);
+       
+       try {
+           const response = await fetch('/api/ticket/sales');
+           
+           if (!response.ok) {
+               throw new Error('Failed to fetch monthly revenue data');
+           }
+           
+           const { data } = await response.json();
+           setMonthlyRevenue(data);
+       } catch (err) {
+           console.error('Error fetching monthly revenue:', err);
+           setError(err instanceof Error ? err.message : 'An error occurred');
+       } finally {
+           setIsLoading(false);
+       }
+   };
+
+   	   fetchMonthlyRevenue();
+	}, []); // Empty dependency array means this runs once on component mount
+
+	if(isLoading) return <div>Loading ...</div>;
+	if(error) return <div>Failed to Fetch</div>
 	return (
 		<motion.div
 			className='bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border border-gray-700'
@@ -28,7 +46,7 @@ const SalesOverviewChart = () => {
 
 			<div className='h-80'>
 				<ResponsiveContainer width={"100%"} height={"100%"}>
-					<LineChart data={salesData}>
+					<LineChart data={monthlyRevenue}>
 						<CartesianGrid strokeDasharray='3 3' stroke='#4B5563' />
 						<XAxis dataKey={"name"} stroke='#9ca3af' />
 						<YAxis stroke='#9ca3af' />

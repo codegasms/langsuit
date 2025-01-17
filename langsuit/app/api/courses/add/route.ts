@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import db from "@/db/drizzle"; // Replace with your actual DB connection import
-import { courses } from "@/db/schema"; // Replace with your actual schema import
+import db from "@/db/drizzle"; 
+import { courses } from "@/db/schema"; 
 
 export async function POST(req: Request) {
     try {

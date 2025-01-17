@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Cell } from "recharts";
-
+import { useState,useEffect } from 'react';
 const COLORS = ["#6366F1", "#8B5CF6", "#EC4899", "#10B981", "#F59E0B"];
 
 const SALES_CHANNEL_DATA = [
@@ -10,7 +10,40 @@ const SALES_CHANNEL_DATA = [
 	{ name: "Social Media", value: 18700 },
 ];
 
+
+
 const SalesChannelChart = () => {
+	const [courseSales, setCourseSales] = useState<{ name: string; value: number; }[]>([]);
+	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+
+	useEffect(() => {
+		const fetchCourseSales = async () => {
+			setIsLoading(true);
+			setError(null);
+			
+			try {
+				const response = await fetch('/api/ticket/channel');
+				
+				if (!response.ok) {
+					throw new Error('Failed to fetch course sales data');
+				}
+				
+				const { data } = await response.json();
+				setCourseSales(data);
+			} catch (err) {
+				console.error('Error fetching course sales:', err);
+				setError(err instanceof Error ? err.message : 'An error occurred');
+			} finally {
+				setIsLoading(false);
+			}
+		};
+
+		fetchCourseSales();
+	}, []);
+
+	if(isLoading) return <div>Loading ...</div>
+	if(error) return <div>Error Failed</div>
 	return (
 		<motion.div
 			className='bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 lg:col-span-2 border border-gray-700'
@@ -22,7 +55,7 @@ const SalesChannelChart = () => {
 
 			<div className='h-80'>
 				<ResponsiveContainer>
-					<BarChart data={SALES_CHANNEL_DATA}>
+					<BarChart data={courseSales}>
 						<CartesianGrid strokeDasharray='3 3' stroke='#4B5563' />
 						<XAxis dataKey='name' stroke='#9CA3AF' />
 						<YAxis stroke='#9CA3AF' />
