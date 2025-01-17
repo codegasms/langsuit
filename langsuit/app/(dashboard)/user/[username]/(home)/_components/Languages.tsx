@@ -1,16 +1,18 @@
-"use client" ;
-
-import React, { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useUser } from '@clerk/nextjs';
 
-const Languages = ({ username }) => {
+const Languages = () => {
+    const { user } = useUser();
     const [languages, setLanguages] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchLanguages = async () => {
+            if (!user) return;
+
             try {
-                const response = await axios.get(`http://localhost:3000/api/user/${username}/languages`);
+                const response = await axios.get(`/api/user/${user.id}/languages`);
                 setLanguages(response.data);
                 setLoading(false);
             } catch (error) {
@@ -20,7 +22,7 @@ const Languages = ({ username }) => {
         };
 
         fetchLanguages();
-    }, [username]);
+    }, [user]);
 
     if (loading) {
         return <div>Loading...</div>;
