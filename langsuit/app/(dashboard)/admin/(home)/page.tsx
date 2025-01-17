@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 import StatCard from "../_components/StatCard";
 import Header from "../_components/Header";
@@ -14,11 +14,11 @@ const OverviewPage = () => {
     const [courseName, setCourseName] = useState("");
     const [courseCategory, setCourseCategory] = useState("");
     const [coursePrice, setCoursePrice] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
+    const [isCourseLoading, setIsCourseLoading] = useState(true);
+    const [isUserLoading, setIsUserLoading] = useState(true);
 
     const handleAddCourse = async (e) => {
         e.preventDefault();
-        setIsLoading(true);
 
         try {
             const response = await fetch("/api/courses/add", {
@@ -45,11 +45,64 @@ const OverviewPage = () => {
         } catch (error) {
             console.error("Error adding course:", error);
             alert("An error occurred while adding the course.");
-        } finally {
-            setIsLoading(false);
         }
     };
 
+    const [courseCount, setCourseCount] = useState(0);
+    const [fetchError, setFetchError] = useState('');
+
+    const [userCount, setUserCount] = useState<number>(0);
+    const [error, setError] = useState<string | null>(null);
+    useEffect(() => {
+        const fetchCourseCount = async () => {
+            try {
+                const response = await fetch('/api/courses/available');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    setCourseCount(data.courses.length); // Assuming the API returns { count: number }
+                    setIsCourseLoading(false);
+                } else {
+                    setFetchError("Failed to fetch course count");
+                    setIsCourseLoading(false);
+                }
+            } catch (error) {
+                console.error('Error fetching course count:', error);
+                setFetchError("An error occurred while fetching course count");
+                setIsCourseLoading(false);
+            }
+        };
+
+        fetchCourseCount();
+    }, []); 
+
+    useEffect(() => {
+        const fetchUserCount = async () => {
+            setIsUserLoading(true);
+            setError(null);
+            
+            try {
+                const response = await fetch('/api/user/available');
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user count');
+                }
+                
+                const data = await response.json();
+                setUserCount(data.count);
+            } catch (err) {
+                console.error('Error fetching user count:', err);
+                setError(err instanceof Error ? err.message : 'An error occurred');
+            } finally {
+                setIsUserLoading(false);
+            }
+        };
+    
+        fetchUserCount();
+    }, []); // Empty dependency array means this runs once on component mount
+
+    if(isCourseLoading || isUserLoading)  return <div>Loading ...</div>
+    if(fetchError || error) return <div>Error in Fetch</div>
     return (
         <div className="flex-1 overflow-auto relative z-10">
             <Header title="Overview" />
@@ -61,9 +114,9 @@ const OverviewPage = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1 }}
                 >
-                    <StatCard name="Total Sales" icon={"Zap"} value={"$5000"} color="#6366F1" />
-                    <StatCard name="New Users" icon={"Users"} value={"120"} color="#8B5CF6" />
-                    <StatCard name="Total Courses" icon={"ShoppingBag"} value={"25"} color="#EC4899" />
+                    {/* <StatCard name="Total Sales" icon={"Zap"} value={"$5000"} color="#6366F1" /> */}
+                    <StatCard name="Total Users" icon={"Users"} value={userCount} color="#8B5CF6" />
+                    <StatCard name="Total Courses" icon={"ShoppingBag"} value={courseCount} color="#EC4899" />
                     <StatCard name="Conversion Rate" icon={"BarChart2"} value={"15%"} color="#10B981" />
                 </motion.div>
 

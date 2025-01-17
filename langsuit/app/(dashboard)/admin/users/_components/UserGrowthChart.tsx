@@ -3,20 +3,20 @@ import { motion } from "framer-motion";
 
 import { useState, useEffect } from 'react';
 
-// const userGrowthData = [
-// 	{ month: "Jan", users: 1000 },
-// 	{ month: "Feb", users: 1500 },
-// 	{ month: "Mar", users: 2000 },
-// 	{ month: "Apr", users: 3000 },
-// 	{ month: "May", users: 4000 },
-// 	{ month: "Jun", users: 5000 },
-// ];
+const userGrowthDat = [
+	{ month: "Jan", users: 1000 },
+	{ month: "Feb", users: 1500 },
+	{ month: "Mar", users: 2000 },
+	{ month: "Apr", users: 3000 },
+	{ month: "May", users: 4000 },
+	{ month: "Jun", users: 5000 },
+];
 
 const UserGrowthChart = () => {
 
 	const [isLoading,setIsLoading] = useState(true);
 
-	const [userGrowthData,useUserGrowthData] = useState([]);
+	const [userGrowthData,useUserGrowthData] = useState(userGrowthDat);
 
 	useEffect(() => {
         const fetchStatCardData = async () => {

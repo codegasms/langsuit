@@ -43,8 +43,36 @@ const UsersPage = () => {
         fetchStatCardData();
     }, []);
 
-	if(isLoading) return <div>Loding..</div>
+	const [stats, setStats] = useState(null);
+	const [revloading, setRevloading] = useState(false);
+	const [reverror, setReverror] = useState<string | null>(null);
+  
+	useEffect(() => {
+	  const fetchRevenueStats = async () => {
+		try {
+		  setRevloading(true);
+		  setReverror(null);
+		  
+		  const response = await fetch('/api/ticket/total');
+		  if (!response.ok) {
+			throw new Error('Failed to fetch revenue data');
+		  }
+		  
+		  const data = await response.json();
+		  setStats(data.statistics.totalRevenue);
+		} catch (err) {
+		  setReverror('Failed to fetch revenue statistics');
+		  console.error('Error fetching revenue stats:', err);
+		} finally {
+		  setRevloading(false);
+		}
+	  };
+  
+	  fetchRevenueStats();
+	}, []); // Empty dependency array means this effect runs once on mount
 
+	if(isLoading || revloading) return <div>Loding..</div>
+	if(error || reverror) return <div>Failed to Fetch</div>
 	return (
 		<div className='flex-1 overflow-auto relative z-10'>
 			<Header title='Users' />
@@ -77,8 +105,8 @@ const UsersPage = () => {
 
 				
 				<div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8'>
-					<UserGrowthChart />
-					<UserActivityHeatmap />
+					{/* <UserGrowthChart /> */}
+					{/* <UserActivityHeatmap /> */}
 					<UserDemographicsChart />
 				</div>
 			</main>
