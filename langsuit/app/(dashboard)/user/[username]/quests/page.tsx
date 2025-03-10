@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
-import { Table } from 'react-bootstrap';
 import { motion } from 'framer-motion';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { Table } from 'react-bootstrap';
+import { Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 const dummyQuests = [
   {
@@ -47,14 +47,14 @@ const COLORS = ['#FFEC99', '#FFD700', '#FFB6C1'];
 const QuestsPage = () => {
   const { username } = useParams();
   const [quests, setQuests]  = useState(dummyQuests);
-  const [loading, setLoading] = useState(true); 
-  const [error, setError] = useState(null); 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    
+
     const fetchQuests = async () => {
       try {
-        setLoading(true); 
+        setLoading(true);
         const response = await fetch(`http://localhost:3000/api/quests/read?user_id=1`);
 
         if (!response.ok) {
@@ -62,17 +62,17 @@ const QuestsPage = () => {
         }
 
         const data = await response.json();
-        setQuests(data); 
+        setQuests(data);
       } catch (err) {
         console.error(err);
-        setError(err.message); 
+        setError(err.message);
       } finally {
         setLoading(false);
       }
     };
 
     fetchQuests();
-  }, []); 
+  }, []);
 
   const pieData = quests.map((quest, index) => ({
     name: quest.title,
@@ -136,7 +136,7 @@ const QuestsPage = () => {
 
         {}
         <div style={{ borderRadius: '8px', padding: '20px', background: '#2c2c2c', boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
-          <h2>{username}'s Quest Details</h2>
+          <h2>{username}&apos;s Quest Details</h2>
           <Table striped bordered hover variant="dark">
             <thead>
               <tr>
@@ -153,7 +153,7 @@ const QuestsPage = () => {
                   <td style={{ padding: '10px' }}>{quest.description}</td>
                   <td style={{ padding: '10px' }}>{quest.progress}%</td>
                   <td style={{ padding: '10px' }}>{quest.rewardPoints}</td>
-                  
+
                 </tr>
               ))}
             </tbody>

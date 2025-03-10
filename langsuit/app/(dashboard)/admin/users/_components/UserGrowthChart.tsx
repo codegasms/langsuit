@@ -1,7 +1,7 @@
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { motion } from "framer-motion";
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const userGrowthDat = [
 	{ month: "Jan", users: 1000 },
@@ -27,7 +27,8 @@ const UserGrowthChart = () => {
                 }
                 const data = await response.json();
                 setIsLoading(false);
-				console.log(data);
+              console.log(data);
+              // eslint-disable-next-line react-hooks/exhaustive-deps
                 useUserGrowthData(data);
             } catch (error) {
                 console.error('Error fetching stat card data:', error);
