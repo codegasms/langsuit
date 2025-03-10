@@ -1,5 +1,13 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import morgan from "./utils/morganLogger";
+
+const logger = morgan({
+  format: "combined",
+  stream: {
+    write: (message) => console.log(`[API] ${message}`),
+  },
+});
 
 const isPublicRoute = createRouteMatcher(["/", "/sign-in(.*)", "/sign-up(.*)"]);
 
@@ -9,6 +17,10 @@ const RATE_LIMIT_TIME_WINDOW = 15 * 60 * 1000; // 15 minutes
 const MAX_REQUESTS = 100; // Maximum requests per window
 
 export default clerkMiddleware(async (auth, request) => {
+  const response = NextResponse.next();
+
+  await logger(request);
+
   const ip = request.ip ?? "127.0.0.1";
   const now = Date.now();
 
@@ -35,7 +47,7 @@ export default clerkMiddleware(async (auth, request) => {
     auth().protect();
   }
 
-  return NextResponse.next();
+  return response;
 });
 
 export const config = {
