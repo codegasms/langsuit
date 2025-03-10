@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams } from 'next/navigation';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { motion } from 'framer-motion';
-import { FaHeart, FaStar, FaBookOpen } from 'react-icons/fa'; // Importing icons
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { FaBookOpen, FaHeart, FaStar } from 'react-icons/fa'; // Importing icons
+import { Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 const ProgressPage = () => {
     const { username } = useParams();
@@ -204,8 +204,8 @@ const ProgressPage = () => {
             >
                 <h2>Additional Information</h2>
                 <p>
-                    In this section, you can track your overall progress, monitor the points you've accumulated, and visualize the languages you have learned. 
-                    Every course completed adds to your total points, while hearts represent your progress health. 
+                    In this section, you can track your overall progress, monitor the points you&apos;ve accumulated, and visualize the languages you have learned.
+                    Every course completed adds to your total points, while hearts represent your progress health.
                     Stay consistent, and aim to maintain your hearts as you unlock new languages and skills.
                 </p>
                 <p>

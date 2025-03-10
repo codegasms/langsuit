@@ -1,17 +1,17 @@
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from "@/components/ui/alert-dialog";
 import { motion } from "framer-motion";
 import { Edit, Search, Trash2 } from "lucide-react";
-import { useState, useEffect } from "react";
-import { 
-  AlertDialog, 
-  AlertDialogAction, 
-  AlertDialogCancel, 
-  AlertDialogContent, 
-  AlertDialogDescription, 
-  AlertDialogFooter, 
-  AlertDialogHeader, 
-  AlertDialogTitle, 
-  AlertDialogTrigger 
-} from "@/components/ui/alert-dialog";
+import { useEffect, useState } from "react";
 
 const CoursesTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -149,7 +149,7 @@ const CoursesTable = () => {
                   </button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <button 
+                      <button
                         className='text-red-400 hover:text-red-300'
                         onClick={() => setCourseToDelete(course)}
                       >
@@ -160,13 +160,13 @@ const CoursesTable = () => {
                       <AlertDialogHeader>
                         <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                         <AlertDialogDescription>
-                          This action cannot be undone. This will permanently delete the course 
-                          "{courseToDelete?.title}" from our servers.
+                          This action cannot be undone. This will permanently delete the course
+                          &apos;{courseToDelete?.title}&apos; from our servers.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction 
+                        <AlertDialogAction
                           className="bg-red-600 text-white hover:bg-red-700"
                           onClick={handleDeleteCourse}
                         >

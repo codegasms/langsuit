@@ -1,7 +1,7 @@
+import { cn } from '@/lib/utils';
+import { Poppins } from 'next/font/google';
 import Image from 'next/image';
-import { Poppins } from 'next/font/google'
 import Link from 'next/link';
-import { cn } from '@/lib/utils'
 
 const font = Poppins({
     subsets: ["latin"],
@@ -12,9 +12,9 @@ const font = Poppins({
 export const Logo = () => {
     return (
         <Link href="/">
-            <div className='flex items-center gap-x-4 hover:opacity-75 transition'>
+            <div className='flex itesms-center gap-x-4 hover:opacity-75 transition'>
                 <div className='bg-white rounded-full p-1'>
-                    <Image 
+                    <Image
                         src="/language.svg"
                         alt="Langsuit"
                         height="32"
@@ -26,7 +26,7 @@ export const Logo = () => {
                         Langsuit
                     </p>
                     <p className="text-xs text-muted-foreground">
-                        Let's Learn
+                        Let&apos;s Learn
                     </p>
                 </div>
             </div>

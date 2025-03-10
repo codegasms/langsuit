@@ -1,7 +1,6 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import React from 'react';
 
 
 const MotionDiv = dynamic(() => import('framer-motion').then((mod) => mod.motion.div), { ssr: false });
@@ -41,7 +40,14 @@ const dummyProgressData = {
     ],
 };
 
-const UserPage = ({ username }) => {
+interface PageProps {
+  params: {
+      username: string
+  }
+}
+
+const UserPage = ({ params }: PageProps) => {
+    const { username } = params;
     // Calculate combined progress data
     const overallPoints = dummyLeaderboardData.reduce((acc, user) => acc + user.points, 0);
     const currentUserPoints = dummyLeaderboardData.find(user => user.username === username)?.points || 0;
@@ -83,7 +89,7 @@ const UserPage = ({ username }) => {
             <h1 className="text-4xl font-semibold text-white mb-8 text-center relative z-10">
                 Welcome to Your Dashboard, {username}!
             </h1>
-            
+
             <MotionDiv
                 className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10"
                 initial="hidden"
