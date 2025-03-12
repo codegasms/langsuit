@@ -1,7 +1,13 @@
 "use client";
 
 import simpleRestProvider from "ra-data-simple-rest";
-import { Admin, Resource } from "react-admin";
+import { Admin, CustomRoutes, Resource } from "react-admin";
+import { Route } from "react-router-dom";
+
+import { ChallengeAnalytics } from "./analytics/ChallengeAnalytics";
+import { CourseAnalytics } from "./analytics/CourseAnalytics";
+import { LessonAnalytics } from "./analytics/LessonAnalytics";
+import { UnitAnalytics } from "./analytics/UnitAnalytics";
 
 import { ChallengeCreate } from "./challenge/create";
 import { ChallengeEdit } from "./challenge/edit";
@@ -26,6 +32,13 @@ const dataProvider = simpleRestProvider("/api");
 const App = () => {
   return (
     <Admin theme={theme} dataProvider={dataProvider}>
+      <CustomRoutes>
+        <Route path="/courses/analytics" element={<CourseAnalytics />} />
+        <Route path="/units/analytics" element={<UnitAnalytics />} />
+        <Route path="/lessons/analytics" element={<LessonAnalytics />} />
+        <Route path="/challenges/analytics" element={<ChallengeAnalytics />} />
+      </CustomRoutes>
+
       <Resource
         name="courses"
         recordRepresentation="title"
