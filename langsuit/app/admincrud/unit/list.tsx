@@ -1,4 +1,5 @@
 import {
+  Button,
   Datagrid,
   List,
   NumberField,
@@ -6,6 +7,7 @@ import {
   TextField,
   TextInput,
 } from "react-admin";
+import { useNavigate } from "react-router-dom";
 import { sharedStyles } from "../sharedStyles";
 
 const listFilters = [
@@ -13,17 +15,25 @@ const listFilters = [
 ];
 
 export const UnitList = () => {
+  const navigate = useNavigate();
+
+  const AnalyticsButton = () => (
+    <Button
+      label="View Analytics"
+      onClick={() => navigate("/units/analytics")}
+      sx={sharedStyles.button}
+    />
+  );
+
   return (
     <List
       filters={listFilters}
+      actions={<AnalyticsButton />}
       sx={{
         "& .RaList-main": sharedStyles.card,
       }}
     >
-      <Datagrid 
-        rowClick="edit"
-        sx={sharedStyles.table}
-      >
+      <Datagrid rowClick="edit" sx={sharedStyles.table}>
         <NumberField source="id" />
         <TextField source="title" />
         <TextField source="description" />
