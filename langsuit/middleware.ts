@@ -1,6 +1,7 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import morgan from "./utils/morganLogger";
+import { cors } from "./middlewares/cors";
 
 const logger = morgan({
   format: "combined",
@@ -23,6 +24,9 @@ export default clerkMiddleware(async (auth, request) => {
 
   const ip = request.ip ?? "127.0.0.1";
   const now = Date.now();
+
+  const _response = cors(request);
+  // if (_response) return _response;
 
   // Get current rate limit data for this IP
   const rateLimitData = rateLimit.get(ip) ?? { count: 0, startTime: now };
