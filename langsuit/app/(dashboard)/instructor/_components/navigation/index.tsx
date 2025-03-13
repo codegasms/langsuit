@@ -19,6 +19,7 @@ export const Navigation = () => {
     const [self, setSelf] = useState(null); 
     const [loading, setLoading] = useState(true); 
     const { collapsed } = useInstructorSidebar((state) => state);
+
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -46,22 +47,22 @@ export const Navigation = () => {
     const routes = [
         {
             label: "Course",
-            href: `/instructor/${self?.username}`,
+            href: `/instructor/${paramUsername}`,
             icon: Fullscreen,
         },
         {
             label: "Live Stream",
-            href: `/instructor/${self?.username}/livestream`,
+            href: `/instructor/${paramUsername}/livestream`,
             icon: KeyRound,
         },
         {
             label: "Student Engagement",
-            href: `/instructor/${self?.username}/engagement`,
+            href: `/instructor/${paramUsername}/engagement`,
             icon: MessageSquare,
         },
         {
             label: "Revenue",
-            href: `/instructor/${self?.username}/revenue`,
+            href: `/instructor/${paramUsername}/revenue`,
             icon: Users,
         }
     ];

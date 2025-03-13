@@ -1,10 +1,12 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { motion } from 'framer-motion';
-
+import { useParams } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import AddCourseModal from './_components/AddCourseModal';
 const MotionCard = motion(Card);
 
 const cardVariants = {
@@ -26,55 +28,173 @@ const darkThemeColors = {
   tooltipBackground: '#333333', // Tooltip background color
 };
 
+interface Course {
+  id: number;
+  title: string;
+  visits: number;
+  price: number;
+}
+
 const CourseManagement = () => {
-  const courses = [
-    { id: 1, title: "Introduction to React", visits: 1200, price: 4999 },
-    { id: 2, title: "Advanced JavaScript", visits: 800, price: 5999 },
-    { id: 3, title: "Python for Beginners", visits: 1500, price: 3999 },
-    { id: 4, title: "Data Science Fundamentals", visits: 1000, price: 6999 },
-  ];
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { username } = useParams();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        if (!username) throw new Error('Username is required');
+
+        const response = await fetch('/api/guidance/instructor', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch course data');
+        }
+
+        const data = await response.json();
+        setCourses(data.courses || []);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An unknown error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (username) fetchCourses(); 
+  }, [username]);
 
   const totalVisits = courses.reduce((sum, course) => sum + course.visits, 0);
-  const avgPrice = (courses.reduce((sum, course) => sum + course.price, 0) / courses.length / 100).toFixed(2);
+  const avgPrice =
+    courses.length > 0
+      ? (courses.reduce((sum, course) => sum + course.price, 0) / courses.length / 100).toFixed(2)
+      : '0.00';
+
+  const handleAddCourse = (newCourse: Course) => {
+    setCourses((prevCourses) => [...prevCourses, newCourse]);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900">
+        <div className="text-white text-lg">Loading course details...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-red-500">
+        <div className="text-center">
+          <h2 className="text-2xl mb-4">Error Loading Courses</h2>
+          <p>{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-4" style={{ backgroundColor: darkThemeColors.background, minHeight: '100vh', padding: '20px' }}>
-      <MotionCard className="w-full" variants={cardVariants} initial="hidden" animate="visible" style={{ backgroundColor: darkThemeColors.cardBackground }}>
+    <div
+      className="space-y-4"
+      style={{
+        backgroundColor: darkThemeColors.background,
+        minHeight: '100vh',
+        padding: '20px',
+      }}
+    >
+      {/* Summary Cards */}
+      <MotionCard
+        className="w-full"
+        variants={cardVariants}
+        initial="hidden"
+        animate="visible"
+        style={{ backgroundColor: darkThemeColors.cardBackground }}
+      >
         <CardHeader>
-          <h2 className="text-2xl font-bold" style={{ color: darkThemeColors.text }}>Course Management</h2>
+          <h2 className="text-2xl font-bold" style={{ color: darkThemeColors.text }}>
+            Course Management
+          </h2>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <MotionCard variants={cardVariants} initial="hidden" animate="visible" style={{ backgroundColor: darkThemeColors.cardBackground }}>
+            {/* Total Courses */}
+            <MotionCard
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+              style={{ backgroundColor: darkThemeColors.cardBackground }}
+            >
               <CardContent>
-                <p className="text-lg font-semibold" style={{ color: darkThemeColors.highlightText }}>Total Courses</p>
-                <p className="text-3xl font-bold" style={{ color: darkThemeColors.text }}>{courses.length}</p>
+                <p className="text-lg font-semibold" style={{ color: darkThemeColors.highlightText }}>
+                  Total Courses
+                </p>
+                <p className="text-3xl font-bold" style={{ color: darkThemeColors.text }}>
+                  {courses.length}
+                </p>
               </CardContent>
             </MotionCard>
-            <MotionCard variants={cardVariants} initial="hidden" animate="visible" style={{ backgroundColor: darkThemeColors.cardBackground }}>
+
+            {/* Total Visits */}
+            <MotionCard
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+              style={{ backgroundColor: darkThemeColors.cardBackground }}
+            >
               <CardContent>
-                <p className="text-lg font-semibold" style={{ color: darkThemeColors.highlightText }}>Total Visits</p>
-                <p className="text-3xl font-bold" style={{ color: darkThemeColors.text }}>{totalVisits}</p>
+                <p className="text-lg font-semibold" style={{ color: darkThemeColors.highlightText }}>
+                  Total Visits
+                </p>
+                <p className="text-3xl font-bold" style={{ color: darkThemeColors.text }}>
+                  {totalVisits}
+                </p>
               </CardContent>
             </MotionCard>
-            <MotionCard variants={cardVariants} initial="hidden" animate="visible" style={{ backgroundColor: darkThemeColors.cardBackground }}>
+
+            {/* Average Price */}
+            <MotionCard
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+              style={{ backgroundColor: darkThemeColors.cardBackground }}
+            >
               <CardContent>
-                <p className="text-lg font-semibold" style={{ color: darkThemeColors.highlightText }}>Avg. Price</p>
-                <p className="text-3xl font-bold" style={{ color: darkThemeColors.text }}>${avgPrice}</p>
+                <p className="text-lg font-semibold" style={{ color: darkThemeColors.highlightText }}>
+                  Avg. Price
+                </p>
+                <p className="text-3xl font-bold" style={{ color: darkThemeColors.text }}>
+                  ${avgPrice}
+                </p>
               </CardContent>
             </MotionCard>
           </div>
         </CardContent>
       </MotionCard>
 
-      <MotionCard variants={chartVariants} initial="hidden" animate="visible" style={{ backgroundColor: darkThemeColors.cardBackground }}>
+      {/* Bar Chart */}
+      <MotionCard
+        variants={chartVariants}
+        initial="hidden"
+        animate="visible"
+        style={{ backgroundColor: darkThemeColors.cardBackground }}
+      >
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={courses}>
               <XAxis dataKey="title" stroke={darkThemeColors.axisLine} />
               <YAxis stroke={darkThemeColors.axisLine} />
               <Tooltip
-                contentStyle={{ backgroundColor: darkThemeColors.tooltipBackground, color: darkThemeColors.text }}
+                contentStyle={{
+                  backgroundColor: darkThemeColors.tooltipBackground,
+                  color: darkThemeColors.text,
+                }}
                 itemStyle={{ color: darkThemeColors.text }}
               />
               <Legend />
@@ -84,6 +204,20 @@ const CourseManagement = () => {
           </ResponsiveContainer>
         </CardContent>
       </MotionCard>
+
+      <div>
+        <CardHeader>
+          <h2>Course Management</h2>
+          <Button onClick={() => setIsModalOpen(true)}>Add New Course</Button>
+        </CardHeader>
+
+        <AddCourseModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onAddCourse={handleAddCourse}
+        />
+      </div>
+
     </div>
   );
 };
