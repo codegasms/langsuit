@@ -1,25 +1,29 @@
 import db from "@/db/drizzle";
 import { tickets } from "@/db/schema";
-import { eq,and } from "drizzle-orm";
-
+import { eq, and } from "drizzle-orm";
+import { getCachedResponse } from "@/lib/cache";
 import { NextResponse } from 'next/server';
 
 export const POST = async (req: Request) => {
   try {
-    console.log(req.body);
-    const { courseId } = await req.json();
+    const { guidanceId } = await req.json(); // Changed from courseId to guidanceId
+    console.log(guidanceId);
+    return Response.json(
+      await getCachedResponse(`get_booked_tickets_${guidanceId}`, async () => {
 
-    const bookedTickets = await db
-      .select({
-        row: tickets.row,
-        column: tickets.column,
+        const bookedTickets = await db
+          .select({
+            row: tickets.row,
+            column: tickets.column,
+          })
+          .from(tickets)
+          .where(and(eq(guidanceId, tickets.guidanceId), eq(true, tickets.isBooked))); // Updated field names
+    
+        const locations = bookedTickets.map(ticket => `${ticket.row}${ticket.column}`);
+    
+        return { bookedTickets: locations };
       })
-      .from(tickets)
-      .where(and(eq(courseId,tickets.courseId),eq(true,tickets.isBooked)));
-
-    const locations = bookedTickets.map(ticket => `${ticket.row}${ticket.column}`);
-
-    return Response.json({ bookedTickets: locations }, { status: 200 });
+    );
   } catch (err) {
     console.error(err);
     return Response.json({ message: "Internal Server Error" }, { status: 500 });
