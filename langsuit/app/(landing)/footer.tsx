@@ -24,7 +24,7 @@ export const Footer = () => {
             height={30}
             className="mr-4 rounded-sm"
           />{" "}
-          Indian
+          Indic
         </Button>
         <Button size="lg" variant="ghost" className="w-full">
           <Image
