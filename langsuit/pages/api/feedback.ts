@@ -1,7 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "../../lib/mongodb";
 import Feedback from "../../models/feedback";
+import { validateCsrfToken } from "@/lib/csrf";
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  if (!validateCsrfToken(req)) {
+    return res.status(403).json({ error: 'Invalid CSRF token' });
+  }
   await dbConnect();
   if (req.method === "POST") {
     try {
