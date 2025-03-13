@@ -38,6 +38,7 @@
     "morgan": "^1.10.0",
     "next": "^14.2.7",
     "next-themes": "^0.3.0",
+    "nextjs-centralized-error-handler": "^1.0.17",
     "plyr": "^3.7.8",
     "ra-data-simple-rest": "^5.4.1",
     "react": "^18",
