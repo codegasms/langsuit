@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { eq } from 'drizzle-orm';
 import db from '@/db/drizzle';
 import { courses } from '@/db/schema';
+import redis from '@/lib/redis';
 
 export async function DELETE(request: NextRequest) {
   try {
@@ -36,6 +37,8 @@ export async function DELETE(request: NextRequest) {
     // Delete the course
     await db.delete(courses).where(eq(courses.id, courseId));
 
+    // Remove from the cache
+    await redis.del("get_available_courses");
     // Return success response
     return NextResponse.json(
       { message: 'Course deleted successfully' },
