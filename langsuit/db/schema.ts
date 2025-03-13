@@ -10,6 +10,7 @@ import {
   text,
   timestamp,
   varchar,
+  numeric
 } from "drizzle-orm/pg-core";
 
 // Reusable chunks
@@ -269,14 +270,14 @@ export const liveStreamRelation = relations(liveStream, ({ one }) => ({
 
 export const tickets = pgTable("tickets", {
   id: serial("id").primaryKey(), // Auto-incrementing primary key
-  courseId: integer("course_id")
+  guidanceId: integer("guidance_id")
     .notNull()
-    .references(() => courses.id, { onDelete: "cascade" }), // Foreign key to the courses table
-  userId: text("user_id"), // Optional: Foreign key to the users table
-  row: text("row").notNull(), // Row (A, B, C, etc.)
-  column: integer("column").notNull(), // Column (1, 2, 3, etc.)
-  purchasedAt: timestamp("purchased_at").defaultNow().notNull(), // When the ticket was purchased
-  isBooked: boolean("is_booked").default(false).notNull(), // Indicates if the ticket is booked
+    .references(() => guidance.id, { onDelete: "cascade" }), 
+  userId: text("user_id"), 
+  row: text("row").notNull(), 
+  column: integer("column").notNull(), 
+  purchasedAt: timestamp("purchased_at").defaultNow().notNull(),
+  isBooked: boolean("is_booked").default(false).notNull(),
 });
 
 export const sales = pgTable("sales", {
@@ -337,3 +338,23 @@ export const languageProgress= pgTable("language_progress", {
     languageName: text("language_name"),
   progress: integer("progress"),
 })
+
+export const guidance = pgTable("guidance", {
+  id: serial("id").primaryKey(),
+  instructorId: integer("instructor_id") 
+    .notNull()
+    .references(() => instructor.id, { onDelete: "cascade" }),
+  name: text("name").notNull(), 
+  description: text("description"), 
+  price: numeric("price").notNull(), 
+  durationInHours: integer("duration_in_hours").notNull(), 
+  createdAt: timestamp("created_at").defaultNow().notNull(), 
+  updatedAt: timestamp("updated_at").defaultNow().notNull(), 
+});
+
+export const videosList = pgTable('videos_list', {
+  id: serial('id').primaryKey(),
+  courseId: integer('courseId').references(() => guidance.id),
+  title: text('title'),
+  url: text('url'),
+});

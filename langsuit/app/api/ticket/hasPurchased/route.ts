@@ -3,13 +3,13 @@ import { tickets } from "@/db/schema";
 import { eq,and } from "drizzle-orm";
 export const POST = async (req: Request) => {
   try {
-    const { courseId, userId } = await req.json();
+    const { guidanceId, userId } = await req.json();
 
     const userTicket = await db
       .select()
       .from(tickets)
       .where(
-        and(and(eq(courseId,tickets.courseId),eq(userId,tickets.userId)),eq(true,tickets.isBooked))
+        and(and(eq(guidanceId,tickets.guidanceId),eq(userId,tickets.userId)),eq(true,tickets.isBooked))
       )
       .limit(1);
 

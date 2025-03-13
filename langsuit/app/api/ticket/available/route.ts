@@ -1,23 +1,34 @@
 import db from "@/db/drizzle";
 import { tickets } from "@/db/schema";
 import { eq,and } from "drizzle-orm";
-export const POST = async (req: Request) => {
+import { getCachedResponse } from "@/lib/cache";
+
+export async function GET(req: Request) {
   try {
-    const { courseId } = await req.json();
+    const { courseId } = await req.json(); // Ensure this is inside try-catch
+    
+    return Response.json(
+      await getCachedResponse(`get_available_tickets_${courseId}`, async () => {
+        const availableTickets = await db
+          .select({
+            row: tickets.row,
+            column: tickets.column,
+          })
+          .from(tickets)
+          .where(and(eq(tickets.isBooked, false), eq(tickets.courseId, courseId))); // Fix `eq` order
+    
+        const locations = availableTickets.map(ticket => `${ticket.row}${ticket.column}`);
 
-    const availableTickets = await db
-      .select({
-        row: tickets.row,
-        column: tickets.column,
-      })
-      .from(tickets)
-      .where(and(eq(false,tickets.isBooked),eq(courseId,tickets.courseId)));
+        return { availableTickets: locations };
+      }),
+      { status: 200 } // Explicit status
+    );
 
-    const locations = availableTickets.map(ticket => `${ticket.row}${ticket.column}`);
-
-    return Response.json({ availableTickets: locations }, { status: 200 });
-  } catch (err) {
-    console.error(err);
-    return Response.json({ message: "Internal Server Error" }, { status: 500 });
+  } catch (error) {
+    console.error("Error fetching available tickets:", error);
+    return Response.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
-};
+}

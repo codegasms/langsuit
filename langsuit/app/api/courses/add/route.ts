@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import db from "@/db/drizzle"; 
 import { courses } from "@/db/schema"; 
+import redis from "@/lib/redis";
 
 export async function POST(req: Request) {
     try {
@@ -23,7 +24,8 @@ export async function POST(req: Request) {
             description: description || null,
             level: level || null,
         });
-
+        // Remove from the cache
+        await redis.del("get_available_courses");
         // Return success response
         return NextResponse.json({ message: "Course added successfully", course: newCourse }, { status: 201 });
     } catch (error) {
