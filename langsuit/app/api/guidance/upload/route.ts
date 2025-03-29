@@ -5,11 +5,8 @@ import path from 'path';
 import db from '@/db/drizzle';
 import { guidance, instructor, videosList, users } from '@/db/schema';
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 export const POST = async (req: NextRequest) => {
   try {
