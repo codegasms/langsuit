@@ -4,7 +4,7 @@
  *   get:
  *     summary: Get user progress
  *     description: Retrieves progress information for a specific user, including hearts, points, active course, and total languages
- *     tags: [User Progress]
+ *     tags: [Users]
  *     parameters:
  *       - in: query
  *         name: userId
