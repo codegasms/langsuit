@@ -32,7 +32,7 @@ export async function GET() {
     console.error("Error fetching user count:", error);
     return Response.json(
       { error: "Failed to fetch user count" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

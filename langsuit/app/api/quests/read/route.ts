@@ -46,7 +46,7 @@ export const GET = async (req: NextRequest) => {
         {
           message: "User Id is not present",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
     const userQuestsData = await db
@@ -62,7 +62,7 @@ export const GET = async (req: NextRequest) => {
         message: "Internal Server Error",
         error: err instanceof Error ? err.message : "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 };

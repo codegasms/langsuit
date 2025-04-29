@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     if (!courseId) {
       return NextResponse.json(
         { error: "Course ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
     console.error("Failed to fetch course playlist:", error);
     return NextResponse.json(
       { error: "Failed to retrieve course playlist" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

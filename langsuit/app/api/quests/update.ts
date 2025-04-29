@@ -45,7 +45,7 @@ import { NextApiRequest, NextApiResponse } from "next";
  */
 export default async function updateQuest(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "PUT") {
     return res.status(405).json({ message: "Method not allowed" });

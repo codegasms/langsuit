@@ -94,7 +94,7 @@ export const GET = async (req: Request) => {
         JSON.stringify({
           message: "UserId not provided",
         }),
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -119,7 +119,7 @@ export const GET = async (req: Request) => {
           activeCourseID: "N/A",
           totalLanguages: 3, // Default value for demonstration
         }),
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -158,7 +158,7 @@ export const GET = async (req: Request) => {
         activeCourseID: courseName,
         totalLanguages, // Computed value
       }),
-      { status: 200 }
+      { status: 200 },
     );
   } catch (err) {
     console.error("Error fetching user progress:", err);
@@ -166,7 +166,7 @@ export const GET = async (req: Request) => {
       JSON.stringify({
         message: "Internal Server Error",
       }),
-      { status: 500 }
+      { status: 500 },
     );
   }
 };

@@ -1,6 +1,6 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import db from '@/db/drizzle'; 
-import { Quests } from '@/db/schema'; 
+import { NextApiRequest, NextApiResponse } from "next";
+import db from "@/db/drizzle";
+import { Quests } from "@/db/schema";
 
 /**
  * @swagger
@@ -30,17 +30,20 @@ import { Quests } from '@/db/schema';
  *       500:
  *         description: Server error while deleting quest
  */
-export default async function deleteQuest(req: NextApiRequest, res: NextApiResponse) {
-    if (req.method !== 'DELETE') {
-        return res.status(405).json({ message: 'Method not allowed' });
-    }
+export default async function deleteQuest(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  if (req.method !== "DELETE") {
+    return res.status(405).json({ message: "Method not allowed" });
+  }
 
-    const { id } = req.body;
+  const { id } = req.body;
 
-    try {
-        await db.delete(Quests).where({ id });
-        return res.status(204).end();
-    } catch (error) {
-        return res.status(500).json({ message: 'Error deleting quest', error });
-    }
+  try {
+    await db.delete(Quests).where({ id });
+    return res.status(204).end();
+  } catch (error) {
+    return res.status(500).json({ message: "Error deleting quest", error });
+  }
 }

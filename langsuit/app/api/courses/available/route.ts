@@ -88,7 +88,7 @@ export async function GET(request: NextRequest) {
           courses: formattedCourses,
           total: formattedCourses.length,
         };
-      })
+      }),
     );
   } catch (error) {
     console.error("Error fetching courses:", error);
@@ -98,7 +98,7 @@ export async function GET(request: NextRequest) {
         message: "Failed to fetch courses",
         error: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

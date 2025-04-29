@@ -70,7 +70,7 @@ export async function POST(req: Request) {
     if (!title || !category) {
       return NextResponse.json(
         { error: "Missing required fields" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -89,13 +89,13 @@ export async function POST(req: Request) {
     // Return success response
     return NextResponse.json(
       { message: "Course added successfully", course: newCourse },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("Error adding course:", error);
     return NextResponse.json(
       { error: "Failed to add course" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

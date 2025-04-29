@@ -45,7 +45,7 @@ import { eq } from "drizzle-orm";
 
 export async function GET(
   req: Request,
-  { params }: { params: { username: string } }
+  { params }: { params: { username: string } },
 ) {
   const { username } = params;
 

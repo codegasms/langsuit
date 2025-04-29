@@ -69,7 +69,7 @@ export const POST = async (req: NextRequest) => {
     if (!foundUser) {
       return NextResponse.json(
         { message: "Instructor not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -80,7 +80,7 @@ export const POST = async (req: NextRequest) => {
     if (!foundInstructor) {
       return NextResponse.json(
         { message: "Instructor not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -89,7 +89,7 @@ export const POST = async (req: NextRequest) => {
       process.cwd(),
       "public",
       "courses",
-      `${Date.now()}_${title}`
+      `${Date.now()}_${title}`,
     );
     await fs.ensureDir(coursePath);
 
@@ -106,13 +106,13 @@ export const POST = async (req: NextRequest) => {
 
     const files = await fs.readdir(coursePath);
     const videoFiles = files.filter(
-      (file) => file.endsWith(".mp4") || file.endsWith(".mkv")
+      (file) => file.endsWith(".mp4") || file.endsWith(".mkv"),
     );
 
     if (videoFiles.length === 0) {
       return NextResponse.json(
         { message: "No valid video files found in the zip" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -141,13 +141,13 @@ export const POST = async (req: NextRequest) => {
 
     return NextResponse.json(
       { message: "Course created successfully", course: newCourse },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("Error creating course:", error);
     return NextResponse.json(
       { message: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 };

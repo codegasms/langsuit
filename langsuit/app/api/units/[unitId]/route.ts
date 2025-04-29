@@ -82,7 +82,7 @@ import { getIsAdmin } from "@/lib/admin";
 
 export const GET = async (
   _req: NextRequest,
-  { params }: { params: { unitId: number } }
+  { params }: { params: { unitId: number } },
 ) => {
   const isAdmin = getIsAdmin();
   if (!isAdmin) return new NextResponse("Unauthorized.", { status: 401 });
@@ -96,7 +96,7 @@ export const GET = async (
 
 export const PUT = async (
   req: NextRequest,
-  { params }: { params: { unitId: number } }
+  { params }: { params: { unitId: number } },
 ) => {
   const isAdmin = getIsAdmin();
   if (!isAdmin) return new NextResponse("Unauthorized.", { status: 401 });
@@ -115,7 +115,7 @@ export const PUT = async (
 
 export const DELETE = async (
   _req: NextRequest,
-  { params }: { params: { unitId: number } }
+  { params }: { params: { unitId: number } },
 ) => {
   const isAdmin = getIsAdmin();
   if (!isAdmin) return new NextResponse("Unauthorized.", { status: 401 });

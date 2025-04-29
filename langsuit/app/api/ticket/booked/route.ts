@@ -65,15 +65,15 @@ export const POST = async (req: Request) => {
           })
           .from(tickets)
           .where(
-            and(eq(guidanceId, tickets.guidanceId), eq(true, tickets.isBooked))
+            and(eq(guidanceId, tickets.guidanceId), eq(true, tickets.isBooked)),
           ); // Updated field names
 
         const locations = bookedTickets.map(
-          (ticket) => `${ticket.row}${ticket.column}`
+          (ticket) => `${ticket.row}${ticket.column}`,
         );
 
         return { bookedTickets: locations };
-      })
+      }),
     );
   } catch (err) {
     console.error(err);

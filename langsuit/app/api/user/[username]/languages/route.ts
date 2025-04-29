@@ -51,7 +51,7 @@ export async function GET(req: Request) {
         {
           message: "UserName is not present",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -68,7 +68,7 @@ export async function GET(req: Request) {
         message: "Internal Server Error",
         error: err instanceof Error ? err.message : "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

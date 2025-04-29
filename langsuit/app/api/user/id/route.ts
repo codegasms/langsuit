@@ -30,7 +30,7 @@ export const GET = async (req: Request) => {
     if (!userId) {
       return new Response(
         JSON.stringify({ message: "User not authenticated" }),
-        { status: 401 }
+        { status: 401 },
       );
     }
 

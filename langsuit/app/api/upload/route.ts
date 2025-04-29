@@ -65,7 +65,7 @@ export const POST = async (req: NextRequest) => {
       if (err) {
         console.error("File upload error:", err);
         return resolve(
-          NextResponse.json({ error: "File upload failed" }, { status: 500 })
+          NextResponse.json({ error: "File upload failed" }, { status: 500 }),
         );
       }
 
@@ -73,7 +73,7 @@ export const POST = async (req: NextRequest) => {
 
       if (!file) {
         return resolve(
-          NextResponse.json({ error: "No file uploaded" }, { status: 400 })
+          NextResponse.json({ error: "No file uploaded" }, { status: 400 }),
         );
       }
 
@@ -83,7 +83,7 @@ export const POST = async (req: NextRequest) => {
         NextResponse.json({
           message: "File uploaded successfully",
           filePath: `/uploads/${file.filename}`,
-        })
+        }),
       );
     });
   });

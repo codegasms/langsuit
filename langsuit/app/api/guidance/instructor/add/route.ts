@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
     if (!instructor) {
       return NextResponse.json(
         { message: "Instructor not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -115,7 +115,7 @@ export async function POST(req: NextRequest) {
     console.error("Error adding course:", error);
     return NextResponse.json(
       { message: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

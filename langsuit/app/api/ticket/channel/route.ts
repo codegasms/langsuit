@@ -48,7 +48,7 @@ export async function GET() {
     console.error("Error calculating course sales:", error);
     return Response.json(
       { error: "Failed to calculate course sales" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

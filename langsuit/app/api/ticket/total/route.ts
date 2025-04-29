@@ -37,7 +37,7 @@ export async function GET() {
       .select({
         ticketCount: sql<number>`count(${tickets.id})`.as("ticket_count"),
         totalRevenue: sql<number>`count(${tickets.id}) * 100`.as(
-          "total_revenue"
+          "total_revenue",
         ),
       })
       .from(tickets)

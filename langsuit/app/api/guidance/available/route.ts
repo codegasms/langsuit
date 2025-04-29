@@ -67,7 +67,7 @@ export async function GET(req: NextRequest) {
     if (!result || result.length === 0) {
       return NextResponse.json(
         { error: "No guidance available" },
-        { status: 404 }
+        { status: 404 },
       );
     }
     return NextResponse.json({ data: result }, { status: 200 });
@@ -75,7 +75,7 @@ export async function GET(req: NextRequest) {
     console.error("Error fetching guidance:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

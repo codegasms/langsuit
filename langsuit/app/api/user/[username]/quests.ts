@@ -85,7 +85,7 @@ export async function GET(req, { params }) {
     console.error(error);
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

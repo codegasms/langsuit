@@ -51,15 +51,15 @@ export const POST = async (req: Request) => {
         and(
           eq(tickets.guidanceId, guidanceId), // Updated from courseId to guidanceId
           eq(tickets.row, row),
-          eq(tickets.column, column)
-        )
+          eq(tickets.column, column),
+        ),
       )
       .limit(1);
 
     if (existingTicket.length && existingTicket[0].isBooked) {
       return new Response(
         JSON.stringify({ message: "Ticket is already booked" }),
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -79,7 +79,7 @@ export const POST = async (req: Request) => {
 
     return new Response(
       JSON.stringify({ message: "Ticket booked successfully" }),
-      { status: 200 }
+      { status: 200 },
     );
   } catch (err) {
     console.error(err);

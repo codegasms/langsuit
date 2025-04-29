@@ -55,7 +55,7 @@ export async function POST(req: Request) {
     if (!guidanceId) {
       return NextResponse.json(
         { message: "Missing guidanceId" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -70,7 +70,7 @@ export async function POST(req: Request) {
     if (!course.length) {
       return NextResponse.json(
         { message: "Guidance not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -85,7 +85,7 @@ export async function POST(req: Request) {
     if (!videos.length) {
       return NextResponse.json(
         { message: "No videos found for this guidance" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -101,7 +101,7 @@ export async function POST(req: Request) {
     console.error("Error fetching playlist:", error);
     return NextResponse.json(
       { message: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -71,7 +71,7 @@ export const POST = async (req: Request, res: Response) => {
     await db.insert(liveStream).values(newStream);
     return Response.json(
       { message: "liveStream created successfully" },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (err) {
     console.error(err);

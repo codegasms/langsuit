@@ -47,8 +47,8 @@ export const POST = async (req: Request) => {
       .where(
         and(
           and(eq(guidanceId, tickets.guidanceId), eq(userId, tickets.userId)),
-          eq(true, tickets.isBooked)
-        )
+          eq(true, tickets.isBooked),
+        ),
       )
       .limit(1);
 

@@ -48,7 +48,7 @@ export async function GET() {
     if (!result.length) {
       return Response.json(
         { error: "No courses found with tickets" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 

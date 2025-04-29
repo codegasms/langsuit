@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import SwaggerUI from 'swagger-ui-react';
-import 'swagger-ui-react/swagger-ui.css';
+import { useEffect, useState } from "react";
+import SwaggerUI from "swagger-ui-react";
+import "swagger-ui-react/swagger-ui.css";
 
 const SwaggerDocs = () => {
   const [spec, setSpec] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('/api/docs')
+    fetch("/api/docs")
       .then((response) => {
         if (!response.ok) {
-          throw new Error('Unauthorized access');
+          throw new Error("Unauthorized access");
         }
         return response.json();
       })
@@ -21,7 +21,12 @@ const SwaggerDocs = () => {
   }, []);
 
   if (error) {
-    return <div className="p-4 text-red-500">Access Denied: Only administrators can view API documentation in production.</div>;
+    return (
+      <div className="p-4 text-red-500">
+        Access Denied: Only administrators can view API documentation in
+        production.
+      </div>
+    );
   }
 
   if (!spec) {

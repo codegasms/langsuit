@@ -45,7 +45,7 @@ export async function DELETE(request: NextRequest) {
     if (!courseId) {
       return NextResponse.json(
         { error: "Course ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -68,7 +68,7 @@ export async function DELETE(request: NextRequest) {
     // Return success response
     return NextResponse.json(
       { message: "Course deleted successfully" },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("Course deletion error:", error);
@@ -79,7 +79,7 @@ export async function DELETE(request: NextRequest) {
         error: "Internal server error",
         details: error instanceof Error ? error.message : "Unexpected error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -50,16 +50,16 @@ export async function GET(req: Request) {
           })
           .from(tickets)
           .where(
-            and(eq(tickets.isBooked, false), eq(tickets.courseId, courseId))
+            and(eq(tickets.isBooked, false), eq(tickets.courseId, courseId)),
           ); // Fix `eq` order
 
         const locations = availableTickets.map(
-          (ticket) => `${ticket.row}${ticket.column}`
+          (ticket) => `${ticket.row}${ticket.column}`,
         );
 
         return { availableTickets: locations };
       }),
-      { status: 200 } // Explicit status
+      { status: 200 }, // Explicit status
     );
   } catch (error) {
     console.error("Error fetching available tickets:", error);
