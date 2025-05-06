@@ -23,4 +23,5 @@ jobs:
         run: npm ci
 
       - name: Run tests
+        working-directory: ./langsuit
         run: npm run test
